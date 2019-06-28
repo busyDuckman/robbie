@@ -1,9 +1,9 @@
 # Robbie
 Upgrade and reboot of a vintage Tandy robot
 
-## Build Instructions
+## Overview
 
-### Building the head
+## Building the head
 The head can be upgraded to rotate via a stepper motor (BOM-04).
 I created a mechanical assembly in OpenSCAD to do this and hold a matrix voice module.
 
@@ -27,19 +27,28 @@ The brace aligns with the rim under the robots head.
 Not the gear only fits one way round.
 
 __Result__  
-Video of the motion of the head in action.
+Video of the motion of the head in action.  
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/sQd-v5fpN5s/0.jpg)](https://youtu.be/sQd-v5fpN5s)
 
 
 
-### Front assembly
-The front assembly contains a raspberry pi 3 b+ (BOM-03), a pi-cam and 2.2" TFT Display (BOM-01), facing through the robots front port.
-!Rendered Front Assembly](doco/pics/front_asm_render.jpgraw=true "Rendered Front Assembly")
+## Front assembly
+The front assembly contains a raspberry pi 3 b+ (BOM-03), a pi-cam and 2.2" TFT Display (BOM-01), 
+facing through the robots front port.
+
 
 _Assembly__
 Build Notes:
-  - The original display housing is to dark, replace with a flat magnifier lens (BOM-02).
-  
+  - This is deliberately a tight fit, rou may need to adjust some bits.
+
+__Design__  
+![Upper view](doco/pics/front_asm_render.jpg?raw=true "Upper view")
+
+__CAD Files__    
+
+    CAD/front_assembly
+Contains 3D printable .stl files/
   
   
 
