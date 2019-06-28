@@ -1,2 +1,43 @@
-# robbie
+# Robbie
 Upgrade and reboot of a vintage Tandy robot
+
+## Build Instructions
+
+### Building the head
+The head can be upgraded to rotate via a stepper motor (BOM-04).
+I created a mechanical assembly in OpenSCAD to do this and hold a matrix voice module.
+
+__Design__  
+![Upper view](doco/pics/head_gears_upper.png?raw=true "Upper view")
+![Lower view](doco/pics/head_gears_lower.png?raw=true "Lower view")
+
+__CAD Files__    
+
+    CAD/head_rotary_assembly
+Contains .scad and 3D printable .stl files/
+
+__Assembly__  
+![Printed parts](doco/pics/P6185662.JPG?raw=true "Printed parts")
+![Printed parts](doco/pics/P6185667_close_up.jpg?raw=true "Printed parts")
+![Printed parts](doco/pics/P6185672.JPG?raw=true "Printed parts")
+
+__Result__  
+Video of the motion of the head in action, https://youtu.be/sQd-v5fpN5s.
+
+### Front assembly
+The front assembly contains a raspberry pi 3 b+ (BOM-03), a pi-cam and 2.2" TFT Display (BOM-01), facing through the robots front port.
+!Rendered Front Assembly](doco/pics/front_asm_render.jpgraw=true "Rendered Front Assembly")
+
+_Assembly__
+Build Notes:
+  - The original display housing is to dark, replace with a flat magnifier lens (BOM-02).
+  
+  
+  
+
+# Bill of materials
+01) 2.2 inch 2.2" SPI TFT LCD Display module 240x320 [ILI9341](https://www.aliexpress.com/item/32666423452.html) 
+02) Generic Page magnifier using Fresnel lens (2-dollar shop) or [link](https://www.amazon.com/Premium-Page-Magnifier-Fresnel-Reading/dp/B015NR7XGS)
+03) Raspberry Pi 3, Model B+
+04) 28byj-48 stepper motor with ULN2003 Driver Board [link](https://www.jaycar.com.au/arduino-compatible-5v-stepper-motor-with-controller/p/XC4458)
+ 
