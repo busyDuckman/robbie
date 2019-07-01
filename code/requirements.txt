@@ -1,0 +1,7 @@
+wave
+# -e git://github.com/gooofy/py-marytts.git#egg=marytts
+#-e git://github.com/michaelsproul/bullshit#egg=bullshit
+py-marytts
+# StringIO
+PyAudio
+picklecache
