@@ -9,11 +9,11 @@ import wave
 from io import BytesIO
 import wave
 import pickle
-from picklecache import cache
+# from picklecache import cache
 from datetime import datetime
 # from bullshit import horoscope
 # from .bullshit import horoscope
-import bullshit
+# import bullshit
 
 from sentance_generator import SentanceGenerator
 
@@ -22,7 +22,7 @@ darebot_folder = "/home/pi/darebot"
 resource_folder = path.join(darebot_folder, "data")
 text_resource_folder = path.join(resource_folder, "text")
 
-@cache()
+# @cache()
 def init_dare_gen(markovLength = 1):
     print("----- CREATING NEW DARE GENERATOR ----")
     dare_files = ["darelist6.txt", "robotdares.txt", "formuladares.txt"]
@@ -30,7 +30,7 @@ def init_dare_gen(markovLength = 1):
     dare_generator = SentanceGenerator(dare_files, markovLength)
     return dare_generator
 
-@cache()
+# @cache()
 def init_lpt_gen(markovLength = 2):
     print("----- CREATING NEW LPT GENERATOR ----")
     files = ["top_lpt.txt"]
@@ -99,9 +99,9 @@ print("darebot init")
 #         os.system(init_file)
 #     else:
 #         print("Could not find: " + init_file)
-
-dare_generator = init_dare_gen(1)
-lpt_gen = init_lpt_gen(3)
+#
+# dare_generator = init_dare_gen(1)
+# lpt_gen = init_lpt_gen(3)
 
 # hardware
 # pygame.init()
@@ -111,7 +111,7 @@ audio = pyaudio.PyAudio()
 
 print("darebot ready")
 
-
+sayit("Hello world")
 
 # sayit("Peter piper picked a peck of pickled peppers.")
 # sayit('The doctor told me to get in a bathtub full of milk, to soothe my sunburn. I asked him "pasteurized?" he said...'
@@ -120,16 +120,16 @@ print("darebot ready")
 # for i in range(20):
 #     sayit(dare_generator.genSentence(1))
 
-sayit(bullshit.horoscope.generate(dirty=True))
+# sayit(bullshit.horoscope.generate(dirty=True))
 
 # sayit(current_time_readable())
 # sayit(random.choice(["Thankyou, I like it when u flick my switch!", "You are good at turning me on."]))
 
 
-sayit(lpt_gen.genSentence(2))
+# sayit(lpt_gen.genSentence(2))
 
-for i in range(100):
-    print(lpt_gen.genSentence(3, 32, 128))
+# for i in range(100):
+#     print(lpt_gen.genSentence(3, 32, 128))
 
 # while True:
 #     text = input(">").lower().strip()

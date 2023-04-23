@@ -1,0 +1,535 @@
+# This is used for context of "when" a song may be a good accompaniment to
+# a situation or event.
+music_context_types:
+  - celebration, festive, background, road_trip, national_pride,
+    romance, action, danger, suspense, motivation, dance_party,
+    pub_music, cafe_music, dinner_party_music, cinematic, nostalgia,
+    lullaby, spiritual, pop_culture_reference, kids
+
+# sound types are: fanfare, music, emotion, sound_effect
+
+beeps:
+  # ---------------------------------------------------------------------
+  # Emotional noises
+  confused:
+    melody: C4,0.1; E4,0.1; C4,0.1
+    type: emotion
+    keywords: null
+    
+  thinking: 
+    melody: C4,0.2; D4,0.2; E4,0.2
+    type: emotion
+    keywords: null
+    
+  expletive:
+    melody: G4,0.1; F4,0.1; D4,0.1; C4,0.1
+    type: emotion
+    keywords: null
+
+  happy:
+    melody: C4,0.1; E4,0.1; G4,0.1; C5,0.1
+    type: emotion
+    keywords: null
+
+  waiting:
+    melody: E4,0.2; E4,0.2; E4,0.2
+    type: emotion
+    keywords: null
+
+  winner:
+    melody: C4,0.1; E4,0.1; G4,0.1; C5,0.2; G4,0.1; C5,0.2
+    type: emotion
+    keywords: null
+
+  loser:
+    melody: C4,0.2; B3,0.2; A3,0.2; G3,0.4
+    type: emotion
+    keywords: null
+
+  # ---------------------------------------------------------------------
+  # Fanfare
+  stadium:
+    keywords:
+      - sports, crowd, cheering, event
+    melody: G4,0.1; A4,0.1; B4,0.1; C5,0.1; D5,0.1; E5,0.1
+    type: fanfare
+
+  jeopardy_theme_intro:
+    keywords:
+      - game_show, thinking, timer, trivia
+    melody: E4,0.25; E4,0.25; E4,0.25; F4,0.25; E4,0.25; D4,0.25; E4,0.25; F4,0.25
+    type: fanfare
+
+  mario_coin:
+    keywords:
+      - video_game, Mario, Nintendo, collect
+    melody: E5,0.125; C5,0.125; E5,0.125; G5,0.125
+    type: sound_effect
+
+
+  olympic_fanfare_intro:
+    keywords:
+      - Olympics, sports, competition, ceremony
+    melody: G4,0.5; E5,0.5; C5,0.5; G4,0.5; E5,0.5; C5,0.5
+    type: fanfare
+
+  reverie:
+    keywords:
+      - reveille, bugle, wake, military
+    melody: G4,0.5; C5,0.5; E5,0.5; G5,0.5; E5,0.5; C5,0.5
+    type: fanfare
+
+  sports_central_theme_intro:
+    keywords:
+      - sports, news, broadcast, theme
+    melody: E4,0.25; F4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; B4,0.25; A4,0.25
+    type: fanfare
+
+  world_news_theme:
+    context: background, cinematic
+    keywords:
+      - news, international, broadcast, global, opening
+    melody: G4,0.1; A4,0.1; B4,0.1; D5,0.1; C5,0.1; B4,0.1; A4,0.1; G4,0.1
+    type: fanfare
+
+  ta_da:
+    keywords:
+      - surprise, announcement, reveal, magic
+    melody: C4,0.5; E4,0.5; G4,0.5; C5,0.5
+    type: sound_effect
+
+  tada_fanfare:
+    keywords:
+      - triumph, success, celebration, accomplishment
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.5; G4,0.25; E4,0.25; C4,0.25; G3,0.5
+    type: fanfare
+
+  take_me_out_to_the_ball_game_intro:
+    keywords:
+      - baseball, stadium, peanuts, cracker_jack
+    melody: C5,0.25; D5,0.25; E5,0.25; F5,0.25; G5,0.25; A5,0.25; G5,0.25; E5,0.25
+    type: fanfare
+
+  thats_all_folks:
+    keywords:
+      - thats all folks, looney tunes, porky pig, cartoon
+    melody: C4,0.25; E4,0.25; G4,0.5; C5,0.25; E5,0.25; G5,0.5
+    type: fanfare
+
+  the_price_is_right_intro:
+    keywords:
+      - come on down, game show, contestant, entrance
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.5; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: fanfare
+
+  wheel_of_fortune_intro:
+    keywords:
+      - game_show, spinning, puzzle, luck
+    melody: C5,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; A5,0.25; G5,0.25; E5,0.25
+    type: fanfare
+
+  # ---------------------------------------------------------------------
+  # chants
+  aussie_aussie_aussie_oi_oi_oi:
+    keywords:
+      - aussie aussie aussie, oi oi oi, australia, chant
+    melody: C5,0.25; C5,0.25; G4,0.25; G4,0.25; E4,0.25; E4,0.25; G4,0.25; G4,0.25
+    type: chant
+
+    basketball_buzzer:
+      keywords:
+        - basketball, game, timer, sports
+      melody: C5,0.125; E5,0.125; G5,0.125; C6,0.125
+      type: music
+  boom_tish:
+    keywords:
+      - drum, joke, punchline, comedy, not-funny, bad-joke
+    melody: C3,0.25; E4,0.25; G4,0.25; C5,0.25
+    type: music
+
+  boxing_bell:
+    keywords:
+      - boxing, round, start, ring
+    melody: F4,0.5; F4,0.5; F4,0.5
+    type: music
+
+#  charge:
+#    keywords:
+#      - cavalry, trumpet, sports, rally
+#    melody: G4,0.5; E5,0.5; G5,0.5; E5,0.5; G5,0.5; E5,0.5; G5,0.5; E5,0.5; G5,0.5;
+#      E5,0.5; G5,0.5; E5,0.5; G5,0.5; E5,0.5; G5,0.5; E5,0.5
+#    type: music
+  charge_fanfare:
+    keywords:
+      - charge, fanfare, sports, stadium
+    melody: C4,0.25; E4,0.25; F4,0.25; G4,0.25; A4,0.5; G4,0.25; F4,0.25; E4,0.25;
+      C4,0.5
+    type: music
+  chicken_reel:
+    keywords:
+      - chicken reel, american, folk, dance
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+  circus_theme:
+    keywords:
+      - circus, clown, fun, amusement
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; G4,0.25; E4,0.25; C4,0.25; G3,0.25
+    type: music
+  can_can:
+    keywords:
+      - can can, dance, french, moulin rouge
+    melody: E4,0.25; G4,0.25; A4,0.25; E5,0.25; D5,0.25; C5,0.25; B4,0.25; A4,0.25
+    type: music
+  can_can_intro:
+    keywords:
+      - french cancan, france, dance, cancan
+    melody: G5,0.25; A5,0.25; B5,0.25; C6,0.25; D6,0.25; E6,0.25; D6,0.25; C6,0.25
+    type: music
+
+  family_feud_intro:
+    keywords:
+      - game_show, family, competition, survey
+    melody: G4,0.25; A4,0.25; B4,0.25; D5,0.25; E5,0.25; D5,0.25; B4,0.25; A4,0.25
+    type: music
+  fanfare:
+    keywords:
+      - trumpets, announcement, celebration, entrance
+    melody: C4,0.25; E4,0.25; G4,0.5; E4,0.25; C4,0.25; G4,0.5
+    type: music
+
+#  football_chant_ole_ole_ole:
+#    keywords:
+#    - soccer, celebration, chant, sports
+#    melody: G4,0.25; A4,0.25; G4,0.25; E4,0.25; D4,0.25; E4,0.25; G4,0.25; A4,0.25
+#    type: music
+
+  # ---------------------------------------------------------------------
+  # music
+  auld_lang_syne_intro:
+    keywords:
+    - New_Year, celebration, friendship, Scottish
+    melody: E5,0.25; F5,0.25; G5,0.25; A5,0.25; G5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+
+  back_in_black_intro:
+    keywords:
+    - AC_DC, rock, Australian, song
+    melody: E4,0.25; G4,0.25; A4,0.25; G4,0.25; E4,0.25; G4,0.25; A4,0.25; G4,0.25
+    type: music
+
+  beds_are_burning_intro:
+    keywords:
+    - Midnight_Oil, politics, environment, Australian
+    melody: E4,0.25; G4,0.25; A4,0.25; G4,0.25; E4,0.25; G4,0.25; A4,0.25; G4,0.25
+    type: music
+  beethovens_fifth_intro:
+    keywords:
+    - Beethoven, symphony, classical, music
+    melody: G4,0.25; G4,0.25; G4,0.25; E4,0.25; G4,0.25; G4,0.25; G4,0.25; E4,0.25
+    type: music
+  bound_for_south_australia_intro:
+    keywords:
+    - folk, Australian, sailing, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+
+  buffalo_gals_intro:
+    keywords:
+    - folk, dance, American, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+  camptown_races_intro:
+    keywords:
+    - folk, race, American, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+
+
+  come_on_eileen_intro:
+    keywords:
+    - Dexys_Midnight_Runners, 80s, pop, dance
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; G5,0.25; A5,0.25
+    type: music
+  countdown_gameshow_intro:
+    keywords:
+    - game_show, timer, puzzle, theme
+    melody: C5,0.25; E5,0.25; G5,0.25; A5,0.25; G5,0.25; E5,0.25; C5,0.25; G4,0.25
+    type: music
+  danny_boy_intro:
+    keywords:
+    - danny boy, ireland, irish, song
+    melody: A4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; C5,0.25; B4,0.25; A4,0.25
+    type: music
+  down_under_intro:
+    keywords:
+    - land down under, men at work, australia, aussie
+    melody: E4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; C5,0.25; B4,0.25
+    type: music
+  eagle_rock_intro:
+    keywords:
+    - Daddy_Cool, Australian, rock, song
+    melody: E4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; C5,0.25; B4,0.25
+    type: music
+
+
+  final_countdown_intro:
+    context: motivation
+    keywords:
+    - Europe, rock, anthem, 80s
+    melody: B4,0.25; A4,0.25; G4,0.25; A4,0.25; B4,0.25; G4,0.25; A4,0.25; B4,0.25
+    type: music
+
+
+  great_southern_land_intro:
+    keywords:
+    - Icehouse, Australian, pride, song
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+  greensleeves_intro:
+    keywords:
+    - English, folk, medieval, love
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+  greig_hall_of_the_mountain_king:
+    keywords:
+    - classical, Peer_Gynt, Edvard_Grieg, Norwegian
+    melody: G4,0.25; A4,0.25; G4,0.25; A4,0.25; G4,0.25; A4,0.25; G4,0.25; A4,0.25
+    type: music
+  happy_birthday_intro:
+    keywords:
+    - birthday, celebration, party, cake
+    melody: C4,0.25; C4,0.25; D4,0.5; C4,0.5; F4,0.5; E4,1
+    type: music
+  highway_to_hell_intro:
+    keywords:
+    - its a long way to the top, acdc, australia, rock
+    melody: A4,0.25; G4,0.25; D4,0.25; E4,0.25; D4,0.25; A4,0.25; G4,0.25; D4,0.25
+    type: music
+  home_among_the_gumtrees_intro:
+    keywords:
+    - Australian, nostalgia, country, song
+    melody: G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; D5,0.25; C5,0.25
+    type: music
+  home_on_the_range_intro:
+    keywords:
+    - western, cowboy, American, folk
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+  i_still_call_australia_home_intro:
+    keywords:
+    - patriotism, Australia, pride, song
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+  jaws_theme:
+    keywords:
+    - shark, suspense, danger, ocean
+    melody: C4,0.5; C#4,0.5; C4,0.5; C#4,0.5; C4,0.5; C#4,0.5; C4,0.5; C#4,0.5
+    type: music
+
+#  khe_san_intro:
+#    keywords:
+#    - Cold_Chisel, Vietnam, war, Australian
+#    melody: D4,0.25; E4,0.25; G4,0.25; A4,0.25; G4,0.25; E4,0.25; D4,0.25; E4,0.25
+#    type: music
+  kookaburra_sits_intro:
+    keywords:
+    - Australian, bird, children, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+  loch_lomond_intro:
+    keywords:
+    - Scottish, folk, song, lake
+    melody: D5,0.25; E5,0.25; F5,0.25; G5,0.25; A5,0.25; G5,0.25; F5,0.25; E5,0.25
+    type: music
+  londons_burning_intro:
+    keywords:
+    - English, nursery_rhyme, fire, song
+    melody: C5,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; G5,0.25; F5,0.25; E5,0.25
+    type: music
+
+  mission_impossible_intro:
+    context: action, danger, suspense
+    keywords:
+    - spy, theme, suspense, action
+    melody: G3,0.5; G3,0.5; A3,0.5; G4,0.5; E4,0.5; D4,0.5
+    type: music
+  molly_malone_intro:
+    keywords:
+    - Irish, folk, Dublin, song
+    melody: C5,0.25; E5,0.25; D5,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; G5,0.25
+    type: music
+  my_old_kentucky_home_intro:
+    keywords:
+    - state_song, Kentucky, nostalgia, south
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+  never_tear_us_apart_intro:
+    keywords:
+    - INXS, love, Australian, ballad
+    melody: F4,0.25; G4,0.25; A4,0.25; G4,0.25; F4,0.25; G4,0.25; A4,0.25; G4,0.25
+    type: music
+  ode_to_joy_intro:
+    keywords:
+    - Beethoven, symphony, celebration, classical
+    melody: E5,0.25; F5,0.25; G5,0.25; G5,0.25; F5,0.25; E5,0.25; D5,0.25; C5,0.25
+    type: music
+  oh_susanna_intro:
+    keywords:
+    - oh susanna, american, folk, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+
+  rock_and_roll_star_intro:
+    keywords:
+    - Oasis, British, rock, anthem
+    melody: E4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25
+    type: music
+  rocky_theme_intro:
+    keywords:
+    - boxing, training, motivation, Rocky_Balboa
+    melody: G4,0.25; A4,0.25; B4,0.25; D5,0.25; G5,0.5
+    type: music
+  seven_nation_army_intro:
+    keywords:
+    - The_White_Stripes, rock, anthem, riff
+    melody: E4,0.25; E4,0.25; G4,0.25; E4,0.25; D4,0.25; C4,0.25; B3,0.25; A3,0.25
+    type: music
+  shenandoah_intro:
+    keywords:
+    - folk, river, longing, American
+    melody: A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; E5,0.25; D5,0.25
+    type: music
+  smoke_on_the_water_intro:
+    keywords:
+    - Deep_Purple, rock, guitar, riff
+    melody: G3,0.25; B3,0.25; D4,0.25; G3,0.25; B3,0.25; D4,0.25; G3,0.25; B3,0.25
+    type: music
+
+
+  sweet_caroline_intro:
+    keywords:
+    - Neil_Diamond, sing-along, love, song
+    melody: A4,0.25; C5,0.25; E5,0.25; D5,0.25; C5,0.25; A4,0.25; C5,0.25; E5,0.25
+    type: music
+
+  the_horses_intro:
+    keywords:
+    - Daryl_Braithwaite, love, Australian, song
+    melody: D4,0.25; F4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; B4,0.25; A4,0.25
+    type: music
+  thunderstruck_intro:
+    keywords:
+    - AC_DC, rock, Australian, song
+    melody: B4,0.25; A4,0.25; E4,0.25; F4,0.25; E4,0.25; B4,0.25; A4,0.25; E4,0.25
+    type: music
+  treaty_intro:
+    keywords:
+    - Yothu_Yindi, indigenous, Australian, reconciliation
+    melody: F4,0.25; G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; C5,0.25; B4,0.25
+    type: music
+  true_blue_intro:
+    keywords:
+    - John_Williamson, Australian, song, patriotism
+    melody: G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; D5,0.25; C5,0.25
+    type: music
+  twinkle_twinkle_intro:
+    keywords:
+    - lullaby, stars, nursery_rhyme, night
+    melody: C4,0.25; C4,0.25; G4,0.25; G4,0.25; A4,0.25; A4,0.25; G4,0.5
+    type: music
+  waltzing_matilda_intro:
+    keywords:
+    - waltzing matilda, australia, aussie, swagman
+    melody: G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; D5,0.25; C5,0.25
+    type: music
+  we_will_rock_you:
+    keywords:
+    - Queen, rock, rhythm, stomp
+    melody: C4,0.25; C4,0.25; C4,0.25; E4,0.25; G4,0.25; C5,0.25; G4,0.25; E4,0.25
+    type: music
+  we_will_rock_you_intro:
+    keywords:
+    - Queen, rock, rhythm, stomp
+    melody: C4,0.25; C4,0.25; G4,0.25; F4,0.25; C4,0.25; C4,0.25; G4,0.25; F4,0.25
+    type: music
+  wedding_march:
+    keywords:
+    - wedding, marriage, bride, groom
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.5; G4,0.25; E4,0.25; C4,0.25; G3,0.5
+    type: music
+
+  when_johnny_comes_marching_home_intro:
+    keywords:
+    - war, return, celebration, American
+    melody: G4,0.25; A4,0.25; B4,0.25; C5,0.25; D5,0.25; E5,0.25; D5,0.25; C5,0.25
+    type: music
+  working_class_man_intro:
+    keywords:
+    - Jimmy_Barnes, rock, Australian, anthem
+    melody: A4,0.25; C5,0.25; D5,0.25; E5,0.25; F5,0.25; G5,0.25; F5,0.25; E5,0.25
+    type: music
+  yankee_doodle_intro:
+    keywords:
+    - patriotic, American, folk, melody
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; A5,0.25; G5,0.25
+    type: music
+  you_are_my_sunshine_intro:
+    keywords:
+    - love, happiness, sunshine, song
+    melody: C4,0.25; E4,0.25; G4,0.25; C5,0.25; E5,0.25; G5,0.25; E5,0.25; C5,0.25
+    type: music
+  you_shook_me_all_night_long_intro:
+    keywords:
+    - AC_DC, rock, Australian, song
+    melody: G4,0.25; E4,0.25; D4,0.25; E4,0.25; D4,0.25; G4,0.25; E4,0.25; D4,0.25
+    type: music
+  youll_never_walk_alone_intro:
+    keywords:
+    - show_tune, football, anthem, support
+    melody: C5,0.25; E5,0.25; F5,0.25; G5,0.25; A5,0.25; G5,0.25; F5,0.25; E5,0.25
+    type: music
+
+
+
+# -------------------------------------------------------------------------
+  born_to_be_wild:
+    context: road_trip
+    keywords:
+    - rock, Steppenwolf, adventure, freedom
+    melody: E4,0.1; G4,0.1; A4,0.1; E4,0.1; A4,0.1; G4,0.1; E4,0.1; G4,0.1; A4,0.1
+    type: music
+
+  at_last:
+    context: romance
+    keywords:
+    - love, soul, Etta_James, ballad
+    melody: G4,0.5; B4,0.5; D5,0.5; B4,0.5; G4,0.5; A4,0.5; B4,0.5; A4,0.5
+    type: music
+
+  eye_of_the_tiger:
+    context: motivation
+    keywords:
+    - Survivor, Rocky, training, motivation
+    melody: E4,0.1; E4,0.1; E4,0.1; C#4,0.1; E4,0.1; E4,0.1; E4,0.1; C#4,0.1; E4,0.1
+    type: music
+
+  sweet_home_alabama:
+    context: pub_music
+    keywords:
+    - Lynyrd_Skynyrd, southern_rock, guitar, anthem
+    melody: D4,0.1; F4,0.1; D4,0.1; C4,0.1; D4,0.1; F4,0.1; D4,0.1; C4,0.1; D4,0.1
+    type: music
+
+  fly_me_to_the_moon:
+    context: dinner_party_music
+    keywords:
+    - Frank_Sinatra, jazz, romantic, crooner
+    melody: C4,0.25; E4,0.25; G4,0.25; A4,0.25; C4,0.25; E4,0.25; G4,0.25; A4,0.25
+    type: music
+
+  imperial_march:
+    context: cinematic, pop_culture_reference
+    keywords:
+    - Star_Wars, Darth_Vader, John_Williams, theme
+    melody: G4,0.1; G4,0.1; G4,0.1; E4,0.1; G4,0.1; G4,0.1; G4,0.1; E4,0.1; G4,0.1
+    type: music

@@ -1,0 +1,320 @@
+keywords:
+  wedding_march:
+    - wedding, marriage, bride, groom
+  charge_fanfare:
+    - charge, fanfare, sports, stadium
+  reveille:
+    - reveille, bugle, wake, military
+  circus_music:
+    - circus, clown, fun, amusement
+  thats_all_folks:
+    - thats all folks, looney tunes, porky pig, cartoon
+  come_on_down:
+    - come on down, game show, contestant, entrance
+  can_can:
+    - can can, dance, french, moulin rouge
+  chicken_reel:
+    - chicken reel, american, folk, dance
+  jingle_bells_intro:
+    - jingle bells, christmas, holiday, intro
+  oh_susanna:
+    - oh susanna, american, folk, song
+  land_down_under:
+    - land down under, men at work, australia, aussie
+  waltzing_matilda:
+    - waltzing matilda, australia, aussie, swagman
+  its_a_long_way_to_the_top:
+    - its a long way to the top, acdc, australia, rock
+  aussie_aussie_aussie:
+    - aussie aussie aussie, oi oi oi, australia, chant
+  god_save_the_queen_intro:
+    - god save the queen, uk, anthem, intro
+  danny_boy:
+    - danny boy, ireland, irish, song
+  scotland_the_brave:
+    - scotland the brave, scotland, bagpipes, anthem
+  ochi_chyornye:
+    - ochi chyornye, russian, song, dark eyes
+  la_cucaracha:
+    - la cucaracha, mexico, folk, dance
+  la_marseillaise_intro:
+    - la marseillaise, france, anthem, intro
+  rule_britannia_intro:
+    - rule britannia, uk, anthem, intro
+  british_grenadiers:
+    - british grenadiers, uk, march, military
+  liverpool_lou:
+    - liverpool lou, uk, song, liverpool
+  italian_tarantella:
+    - italian tarantella, italy, dance, folk
+  radetzky_march_intro:
+    - radetzky march, austria, military, march
+  german_polka:
+    - german polka, germany, dance, polka
+  spanish_bullfight:
+    - spanish bullfight, spain, paso doble, dance
+  swedish_folk_dance:
+    - swedish folk dance, sweden, dance, folk
+  the_dutchman:
+    - the dutchman, netherlands, song, amsterdam
+  moldavian_dance:
+    - moldavian dance, moldova, dance, folk
+  french_cancan_intro:
+    - french cancan, france, dance, cancan
+  irish_jig_intro:
+    - irish jig, ireland, dance, jig
+  scottish_bagpipes_intro:
+    - scottish bagpipes, scotland, music, bagpipes
+  russian_dance_trepak_intro:
+    - russian dance, trepak, russia, dance
+  greek_sirtaki_intro:
+    - greek sirtaki, greece, dance, zorba
+  swiss_yodel_intro:
+    - swiss yodel, switzerland, yodel, alps
+  norwegian_dance_intro:
+    - norwegian dance, norway, dance, folk
+  finnish_polka_intro:
+    - finnish polka, finland, polka, dance
+  hungarian_dance_no5_intro:
+    - hungarian dance, hungary, dance, brahms
+  polish_mazurka_intro:
+    - polish mazurka, poland, dance, mazurka
+  abba_mamma_mia_intro:
+    - abba, mamma mia, sweden, pop
+  led_zeppelin_stairway_to_heaven_intro:
+    - led zeppelin, stairway to heaven, rock, classic
+  queen_we_will_rock_you_intro:
+    - queen, we will rock you, rock, anthem
+  u2_beautiful_day_intro:
+    - u2, beautiful day, ireland, rock
+  scorpions_wind_of_change_intro:
+    - scorpions, wind of change, germany, rock
+  acdc_thunderstruck_intro:
+    - acdc, thunderstruck, australia, rock
+  the_rolling_stones_satisfaction_intro:
+    - rolling stones, satisfaction, uk, rock
+  the_beatles_twist_and_shout_intro:
+    - beatles, twist and shout, uk, rock
+  deep_purple_smoke_on_the_water_intro:
+    - deep purple, smoke on the water, rock, riff
+  nirvana_smells_like_teen_spirit_intro:
+    - nirvana, smells like teen spirit, rock, grunge
+  pink_floyd_another_brick_in_the_wall_intro:
+    - pink floyd, another brick in the wall, rock, progressive
+  the_clash_london_calling_intro:
+    - the clash, london calling, uk, punk
+  the_police_message_in_a_bottle_intro:
+    - the police, message in a bottle, uk, rock
+  the_who_my_generation_intro:
+    - the who, my generation, uk, rock
+  dire_straits_money_for_nothing_intro:
+    - dire straits, money for nothing, rock, riff
+  jimmy_hendrix_purple_haze_intro:
+    - jimi hendrix, purple haze, rock, guitar
+  metallica_enter_sandman_intro:
+    - metallica, enter sandman, rock, metal
+  black_sabbath_iron_man_intro:
+    - black sabbath, iron man, rock, metal
+  red_hot_chili_peppers_under_the_bridge_intro:
+    - red hot chili peppers, under the bridge, rock, alternative
+  pearl_jam_alive_intro:
+    - pearl jam, alive, rock, grunge
+  nirvana_smells_like_teen_spirit_intro:
+    - nirvana, smells like teen spirit, rock, grunge
+  guns_n_roses_sweet_child_o_mine_intro:
+    - guns n' roses, sweet child o' mine, rock, hard rock
+  led_zeppelin_stairway_to_heaven_intro:
+    - led zeppelin, stairway to heaven, rock, classic
+  queen_we_will_rock_you_intro:
+    - queen, we will rock you, uk, rock, anthem
+  deep_purple_smoke_on_the_water_intro:
+    - deep purple, smoke on the water, rock, riff
+  van_halen_jump_intro:
+    - van halen, jump, rock, synthesizer
+  ac_dc_back_in_black_intro:
+    - ac/dc, back in black, rock, hard rock, riff
+  the_rolling_stones_satisfaction_intro:
+    - the rolling stones, satisfaction, uk, rock
+  u2_sunday_bloody_sunday_intro:
+    - u2, sunday bloody sunday, ireland, rock
+  the_beatles_hey_jude_outro:
+    - the beatles, hey jude, uk, rock, pop
+  ac_dc_thunderstruck_intro:
+    - ac/dc, thunderstruck, rock, hard rock, riff
+  the_white_stripes_seven_nation_army_intro:
+    - the white stripes, seven nation army, rock, riff
+  blur_song_2_intro:
+    - blur, song 2, uk, rock, britpop
+  coldplay_viva_la_vida_intro:
+    - coldplay, viva la vida, uk, rock, pop
+  oasis_wonderwall_intro:
+    - oasis, wonderwall, uk, rock, britpop
+  franz_ferdinand_take_me_out_intro:
+    - franz ferdinand, take me out, uk, rock, indie
+  the_clash_london_calling_intro:
+    - the clash, london calling, uk, rock, punk
+  the_who_my_generation_intro:
+    - the who, my generation, uk, rock, mod
+  led_zeppelin_whole_lotta_love_intro:
+    - led zeppelin, whole lotta love, uk, rock, classic
+  muse_uprising_intro:
+    - muse, uprising, uk, rock, alternative
+  robbie_williams_let_me_entertain_you_intro:
+    - robbie williams, let me entertain you, uk, pop, rock
+  u2_sunday_bloody_sunday_intro:
+    - u2, sunday bloody sunday, ireland, rock, pop
+  cranberries_zombie_intro:
+    - cranberries, zombie, ireland, rock, pop
+  david_bowie_heroes_intro:
+    - david bowie, heroes, uk, rock, pop
+  radiohead_creep_intro:
+    - radiohead, creep, uk, rock, alternative
+  johnny_cash_i_walk_the_line_intro:
+    - johnny cash, i walk the line, uk, country, rock
+  the_verve_bitter_sweet_symphony_intro:
+    - the verve, bitter sweet symphony, uk, rock, britpop
+  queen_we_will_rock_you_intro:
+    - queen, we will rock you, uk, rock, anthem
+  rolling_stones_satisfaction_intro:
+    - rolling stones, satisfaction, uk, rock, classic
+  beatles_sgt_peppers_intro:
+    - beatles, sgt peppers, uk, rock, classic
+  stadium:
+  - sports, crowd, cheering, event
+  fanfare:
+  - trumpets, announcement, celebration, entrance
+  charge:
+  - cavalry, trumpet, sports, rally
+  ta_da:
+  - surprise, announcement, reveal, magic
+  jaws_theme:
+  - shark, suspense, danger, ocean
+  tada_fanfare:
+  - triumph, success, celebration, accomplishment
+  boom_tish:
+  - drum, joke, punchline, comedy
+  mario_coin:
+  - video_game, Mario, Nintendo, collect
+  happy_birthday_intro:
+  - birthday, celebration, party, cake
+  super_mario_theme:
+  - video_game, Nintendo, adventure, Mario
+  shave_and_a_haircut:
+  - rhythm, knock, door, melody
+  rocky_theme_intro:
+  - boxing, training, motivation, Rocky_Balboa
+  twinkle_twinkle_intro:
+  - lullaby, stars, nursery_rhyme, night
+  beethovens_5th_intro:
+  - Beethoven, classical, symphony, music
+  mission_impossible_intro:
+  - spy, theme, suspense, action
+  jeopardy_theme_intro:
+  - game_show, thinking, timer, trivia
+  wheel_of_fortune_intro:
+  - game_show, spinning, puzzle, luck
+  family_feud_intro:
+  - game_show, family, competition, survey
+  we_will_rock_you:
+  - Queen, rock, rhythm, stomp
+  olympic_fanfare_intro:
+  - Olympics, sports, competition, ceremony
+  sports_central_theme_intro:
+  - sports, news, broadcast, theme
+  boxing_bell:
+  - boxing, round, start, ring
+  basketball_buzzer:
+  - basketball, game, timer, sports
+  yankee_doodle_intro:
+  - patriotic, American, folk, melody
+  take_me_out_to_the_ball_game_intro:
+  - baseball, stadium, peanuts, cracker_jack
+  shenandoah_intro:
+  - folk, river, longing, American
+  when_johnny_comes_marching_home_intro:
+  - war, return, celebration, American
+  my_old_kentucky_home_intro:
+  - state_song, Kentucky, nostalgia, south
+  home_on_the_range_intro:
+  - western, cowboy, American, folk
+  you_are_my_sunshine_intro:
+  - love, happiness, sunshine, song
+  camptown_races_intro:
+  - folk, race, American, song
+  buffalo_gals_intro:
+  - folk, dance, American, song
+  kookaburra_sits_intro:
+  - Australian, bird, children, song
+  home_among_the_gumtrees_intro:
+  - Australian, nostalgia, country, song
+  i_still_call_australia_home_intro:
+  - patriotism, Australia, pride, song
+  treaty_intro:
+  - Yothu_Yindi, indigenous, Australian, reconciliation
+  true_blue_intro:
+  - John_Williamson, Australian, song, patriotism
+  bound_for_south_australia_intro:
+  - folk, Australian, sailing, song
+  great_southern_land_intro:
+  - Icehouse, Australian, pride, song
+  the_horses_intro:
+  - Daryl_Braithwaite, love, Australian, song
+  thunderstruck_intro:
+  - AC_DC, rock, Australian, song
+  back_in_black_intro:
+  - AC_DC, rock, Australian, song
+  eagle_rock_intro:
+  - Daddy_Cool, Australian, rock, song
+  you_shook_me_all_night_long_intro:
+  - AC_DC, rock, Australian, song
+  khe_san_intro:
+  - Cold_Chisel, Vietnam, war, Australian
+  beds_are_burning_intro:
+  - Midnight_Oil, politics, environment, Australian
+  working_class_man_intro:
+  - Jimmy_Barnes, rock, Australian, anthem
+  never_tear_us_apart_intro:
+  - INXS, love, Australian, ballad
+  auld_lang_syne_intro:
+  - New_Year, celebration, friendship, Scottish
+  molly_malone_intro:
+  - Irish, folk, Dublin, song
+  greig_hall_of_the_mountain_king:
+  - classical, Peer_Gynt, Edvard_Grieg, Norwegian
+  londons_burning_intro:
+  - English, nursery_rhyme, fire, song
+  loch_lomond_intro:
+  - Scottish, folk, song, lake
+  ode_to_joy_intro:
+  - Beethoven, symphony, celebration, classical
+  beethovens_fifth_intro:
+  - Beethoven, symphony, classical, music
+  greensleeves_intro:
+  - English, folk, medieval, love
+  we_will_rock_you_intro:
+  - Queen, rock, rhythm, stomp
+  seven_nation_army_intro:
+  - The_White_Stripes, rock, anthem, riff
+  come_on_eileen_intro:
+  - Dexys_Midnight_Runners, 80s, pop, dance
+  smoke_on_the_water_intro:
+  - Deep_Purple, rock, guitar, riff
+  final_countdown_intro:
+  - Europe, rock, anthem, 80s
+  sweet_caroline_intro:
+  - Neil_Diamond, sing-along, love, song
+  youll_never_walk_alone_intro:
+  - show_tune, football, anthem, support
+  football_chant_ole_ole_ole:
+  - soccer, celebration, chant, sports
+  countdown_gameshow_intro:
+  - game_show, timer, puzzle, theme
+  rock_and_roll_star_intro:
+  - Oasis, British, rock, anthem
+
+
+
+
+
+
+

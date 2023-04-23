@@ -1,0 +1,10 @@
+numpy
+wave
+requests
+py-marytts
+pyaudio
+picklecache
+pyyaml
+fastapi
+uvicorn
+

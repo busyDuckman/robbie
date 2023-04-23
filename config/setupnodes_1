@@ -1,0 +1,33 @@
+
+# display info
+# https://www.raspberrypi.org/forums/viewtopic.php?t=157618
+# https://github.com/notro/fbtft/wiki/LCD-Modules
+# https://github.com/notro/fbtft/wiki/LCD-Shields
+# https://aaron-brown.net/blog/?p=99
+# page that got it working: http://marcosgildavid.blogspot.com/2014/02/getting-ili9341-spi-screen-working-on.html
+
+sudo apt-get install sox
+sudo apt-get install gradle
+
+
+# copies fb0 to fb1
+# https://github.com/tasanakorn/rpi-fbcp
+git clone https://github.com/tasanakorn/rpi-fbcp.git
+cd rpi-fbcp/
+mkdir build
+cd build
+cmake ..
+make
+
+
+# https://github.com/marytts/marytts
+# https://github.com/marytts/marytts/wiki/MaryInterface
+git clone https://github.com/marytts/marytts.git
+cd marytts
+./gradlew build
+./gradlew runInstallerGui
+./gradlew run
+
+#~/.bashrc
+alias python='/usr/bin/python3.5'
+alias pip='/usr/bin/pip3'

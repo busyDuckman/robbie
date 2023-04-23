@@ -1,0 +1,199 @@
+    1  sudo raspi-config
+    2  sudo reboot
+    3  raspi-config
+    4  sudo raspi-config
+    5  ls
+    6  sudo apt install cmake
+    7  sudo shutdown
+    8  sudo shutdown now
+    9  aplay -v
+   10  cat /dev/random | aplay
+   11  alsamixer
+   12  cat /dev/random | aplay
+   14  cat /dev/random | aplay
+   15  sudo apt-get install espeak
+   16  espeak "foo bar"
+   17  sudo raspi-config
+   18  sudo reboot
+   19  sudo iwlist wlan0 scan
+   20  sudo iwlist wlan0 scan | grep BUT
+   21  sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+   22  sudo reboot
+   23  ping google.com
+   24  ping 192.168.0.69
+   25  ifconfig
+   26  sudo raspi-config
+   27  ifconfig
+   28  raspi-config
+   29  sudo   raspi-config
+   30  ifconfig
+   31  sudo shutdown
+   32  sudo shutdown now
+
+   33  sudo modprobe fbtft_device name=rpi-display gpios=reset:23,dc:24,led:18 rotate=90
+   34  sudo modprobe fb_ili9341 name=rpi-display gpios=reset:23,dc:24,led:18 rotate=90
+   35  ls /dev/f
+   36  find -name /dev/ -name "raspi*"
+   37  find -name /dev/ --name "raspi*"
+   38  find -name /dev --name "raspi*"
+   39  find /dev -name "raspi*"
+   40  find /dev -name "*"
+   41  ls -lR /dev
+   42  sudo reboot
+   43  ls /dev
+   44  sudo modprobe f
+   45  dmesg
+   46  sudo modprobe fbtft_device name=rpi-display gpios=reset:23,dc:24,led:18 rotate=90
+   47  sudo modprobe fbtft_device name=fb_ili9314 gpios=reset:23,dc:24,led:18 rotate=90
+   48  sudo modprobe fbtft_device name=fb_ili9314 gpios=reset:23,dc:24,led:18
+   49  sudo reboot
+   50  sudo modprobe fbtft_device name=fb_ili9314 gpios=reset:23,dc:24
+   51  sudo modprobe fbtft_device name=fb_ili9341 gpios=reset:23,dc:24,led:18 rotate=90
+   52  sudo modprobe fbtft_device custom name=fb_ili9341 gpios=reset:23,dc:24,led:18 rotate=90
+   53  ls /dev
+   54  dmesg
+   55  sudo reboot
+   56  sudo raspi-config
+   57  less /boot/config.txt
+   58  dmesg
+   59  sudo modprobe fbtft_device custom name=fb_ili9341 speed=40000000 gpios=reset:23,dc:24,led:18 rotate=90
+   60  dmesg
+   61  ls /dev
+   62  echo "sudo modprobe fbtft_device custom name=fb_ili9341 speed=40000000 gpios=reset:23,dc:24,led:18 rotate=90" >> loadfb1
+   63  ls
+   64  cat >> /dev/fb1
+   65  dd if=/dev/fb0 of=/dev/fb1
+   66  ls /dev/
+   67  dd if=/dev/fb0 of=/dev/fb1
+   68  less loadfb1
+   69  fbterm
+   70  dd if=/dev/fb0 of=/dev/fb1
+   71  sudo reboot
+   72  startx
+
+   73  echo "sudo modprobe fbtft_device custom name=fb_ili9341 speed=40000000 gpios=reset:23,dc:24,led:18 rotate=90" >> loadfb1
+   74  sudo modprobe fbtft_device custom name=fb_ili9341 speed=40000000 gpios=reset:23,dc:24,led:18 rotate=90
+   75  dd if=/dev/fb0 of=/dev/fb1
+
+echo "sudo modprobe fbtft_device custom name=fb_ili9341 speed=40000000 gpios=reset:23,dc:24,led:18 rotate=90" >> loadfb1
+sudo modprobe fbtft_device custom name=fb_ili9341 gpios=reset:23,dc:24,led:18 speed=16000000 rotate=90 bgr=1
+
+
+   76  man dd
+   77  dd if=/dev/fb0 of=/dev/fb1
+   78  ls /dev
+   79  dd if=/dev/zero of= /dev/fb1
+   80  dd if=/dev/zero of=/dev/fb1
+   81  dd if=/dev/random of=/dev/fb1
+   82  dd if=/dev/urandom of=/dev/fb1
+   83  dd if=/dev/zero of=/dev/fb1
+   84  raspicam -t 0
+   85  raspivid
+   86  raspivid -t 0
+   87  ls /dev
+   88  man raspivid
+   89  raspivid
+   90  raspivid -w320 -h240 -t0 -o/dev/fb1
+   91  raspivid -w 320 -h 240 -t 0 -o /dev/fb1
+   92  fbcp
+   93  raspivid -w 320 -h 240 -t 0 -o /dev/fb1
+   94  raspistill
+   95  raspistill -w 320 -h 240 -t 0 -o /dev/fb1
+   96  raspistill
+   97  raspistill -w 320 -h 240 -o /dev/fb1
+   98  raspistill -w 320 -h 240
+   99  raspistill
+  100  raspistill -w 320 -h 240 -t 1 -o /dev/fb1
+  101  raspistill -w 240 -h 240 -t 1 -o /dev/fb1
+  102  raspistill -w 240 -h 240 -t 1000 -o /dev/fb1
+  103  raspistill -w 320 -h 240 -t 1000 -o /dev/fb1
+  104  raspistill
+  105  raspistill -w 320 -h 240 -t 1000 -o - | dd of=/dev/fb1
+  106  sudo apt install mogrify
+  107  sudo apt install imagemagik
+  108  sudo apt install imagemagick
+  109  mogrify
+  110  raspistill -w 320 -h 240 -t 1000 -o - | mogrify -format bmp | dd of=/dev/fb1
+  111  mogrify
+  112  raspistill -w 320 -h 240 -t 1000 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  113  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  114  raspistill -w 240 -h 320 -t 1 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  115  mogrify
+  116  raspistill -w 320 -h 240 -t 0 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  117  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  118  mogrify
+  119  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | dd of=/dev/fb1
+  120  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 16 - | dd of=/dev/fb1
+  121  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 8 - | dd of=/dev/fb1
+  122  mogrify
+  123  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 9 - | dd of=/dev/fb1
+  124  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 4 - | dd of=/dev/fb1
+  125  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 16 - | dd of=/dev/fb1
+  126  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 16 - | dd of=/dev/fb1 of=/dev/null
+  127  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 16 - | dd of=/dev/null
+  128  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp  - | dd of=/dev/null
+  129  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 3 - | dd of=/dev/null
+  130  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 23 - | dd of=/dev/null
+  131  raspistill -w 320 -h 240 -t 1 -o - | mogrify -depth 24 -format bmp  - | dd of=/dev/null
+  132  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | convert -depth 8 | dd of=/dev/null
+  133  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | convert -depth 8 - | dd of=/dev/null
+  134  convert
+  135  convery
+  136  convert
+  137  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | convert-im6.q16 -depth 8 - | dd of=/dev/null
+  138  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | hexdump -C
+  139  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | hexdump -C | less
+  140  raspistill -w 320 -h 240 -t 1 -o - | hexdump -C | less
+  141  raspistill -w 320 -h 240 -t 1 -o - | convert -format bmp | hexdump -C | less
+  142  raspistill -w 320 -h 240 -t 1 -o - | convert -format bmp - | hexdump -C | less
+  143  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp - | hexdump -C | less
+  144  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -depth 8 - | hexdump -C | less
+  145  mogrify
+  146  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | hexdump -C | less
+  147  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | dd of=/dev/null
+  148  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | dd of=/dev/null -skip 39
+  149  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | dd of=/dev/null skip=39
+  150  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | dd of=/dev/fb1 skip=39
+  151  dd if=/dev/urandom of=/dev/fb1
+  152  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 8 - | dd of=/dev/fb1 skip=39
+  153  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd of=/dev/fb1 skip=39
+  154  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | hexdump -C
+  155  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - |
+  156  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd of=/dev/null
+  157  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd -skip 39 of=/dev/null
+  158  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd skip=39 of=/dev/null
+  159  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd skip=35 of=/dev/null
+  160  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format bmp -type Palette -depth 16 - | dd skip=33 of=/dev/null
+  161  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 16 - | hexdump -C | less
+  162  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 16 - | dd of=/dev/null
+  163  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format rgb -type Palette -depth 16 - | dd of=/dev/null
+  164  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 8 - | dd of=/dev/null
+  165  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 16 - | dd of=/dev/null
+  166  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 8 - | dd of=/dev/null
+  167  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 8 - | dd of=/dev/fb1
+  168  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format raw -type Palette -depth 8 - | dd of=/dev/null
+  169  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format rgb -type Palette -depth 8 - | dd of=/dev/null
+  170  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format png -type Palette -depth 8 - | dd of=/dev/null
+  171  raspistill -w 320 -h 240 -t 1 -o - | mogrify -format  -type Palette -depth 8 - | dd of=/dev/null
+  172  less loadfb1
+  173  ls
+  174  dd if=/dev/zero of=/dev/fb1
+  175  cat >> /dev/fb
+  176  cat >> /dev/fb1
+  177  dd if=/dev/urandom of=/dev/fb1
+  178  espeek "hello"
+  179  espeak "hello"
+  180  sudo reboot
+  181  espeak "hello"
+  182  raspi-config
+  183  sudo raspi-config
+  184  espeak "hello"
+  185  sudo reboot
+  186  espeak "hello"
+  187  sudo raspi-config
+  188  man espeak
+  189  alsamixer
+  190  man espeak
+  191  espeak "hello"
+  192  history
+  193  history >hist.txt
