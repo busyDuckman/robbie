@@ -1,9 +1,3 @@
-from os.path import join
-
-import yaml
-import numpy as np
-import pyaudio
-
 """
 This module contains the play_sound function for playing simple beep sequences
 using PyAudio. It supports sine, square, triangle, and sawtooth waveforms,
@@ -26,7 +20,7 @@ play_sound(music_library["happy"], wave_type='square', decay_factor=2.0)
 play_sound(music_library["thinking"], wave_type='triangle', decay_factor=0.0, speed_factor=0.5)
 
 Music Library Format:
-  - The music library is a dictionary with keys corresponding to beep types 
+  - The music library is a dictionary with keys corresponding to beep types
     (e.g., "happy", "thinking", etc.)
   - Each value is a string containing a semicolon-separated list of notes and
     durations in the format "NOTE,DURATION"
@@ -35,66 +29,56 @@ Music Library Format:
   - DURATIONS are specified as decimal values in seconds (e.g., 0.1 for 100ms)
 """
 
+from os.path import join
+import yaml
+import numpy as np
+import pyaudio
 
-def note_to_frequency(note):
+from utils.robbie9000_settings import Robbie9000
+
+
+def note_to_frequency(note: str) -> float:
+    """
+    Turns a note, with octave, eg "C#8" into a frequency.
+    Notes are specified as letter (A-G), optional sharp (#).
+    """
     A4 = 440
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
     if '#' in note:
-        key = note[0:2]
+        key = note[0:2].upper()
         octave = int(note[2]) + 1
     else:
-        key = note[0]
+        key = note[0].upper()
         octave = int(note[1]) + 1
 
     key_number = keys.index(key)
     return A4 * pow(2, (octave * 12 + key_number - 49) / 12)
 
-# def generate_sine_wave(freq, duration, sample_rate=44100):
-#     t = np.linspace(0, duration, int(sample_rate * duration), False)
-#     sine_wave = 0.5 * np.sin(2 * np.pi * freq * t)
-#     return sine_wave.astype(np.float32)
-#
-#
-# def play_sound(sound_string,
-#                sample_rate=44100,
-#                robotic_factor=0.0,
-#                speed_factor=1.0):
-#     sequence = [(note_duration.split(',')[0], float(note_duration.split(',')[1])) for note_duration in
-#                 sound_string.split('; ')]
-#
-#     p = pyaudio.PyAudio()
-#     stream = p.open(format=pyaudio.paFloat32, channels=1, rate=sample_rate, output=True)
-#
-#     for note, duration in sequence:
-#         freq = note_to_frequency(note)
-#         sine_wave = generate_sine_wave(freq, duration / speed_factor)
-#         square_wave = generate_square_wave(freq, duration / speed_factor)
-#
-#         mixed_wave = (1 - robotic_factor) * sine_wave + robotic_factor * square_wave
-#         stream.write(mixed_wave.tobytes())
-#
-#     stream.stop_stream()
-#     stream.close()
-#     p.terminate()
-
-
-import numpy as np
-import pyaudio
 
 def play_sound(sound_string,
                sample_rate=44100,
                wave_type='sine',
                decay_factor=0.0,
                speed_factor=1.0):
+    """
+    Plays a sound string (simple music).
+    :param sound_string: eg: "C4,0.25; E4,0.25; G4,0.25; C5,0.25; G4,0.25; E4,0.25; C4,0.25; G3,0.25"
+    :param audio: PyAudio object to play to,
+    :param sample_rate: waveform resolution.
+    :param wave_type: 'sine', 'square', 'triangle', 'sawtooth'
+    :param decay_factor: > 0 adds a piano like amplitude falloff to each note.
+    :param speed_factor: Playback speed multiplier.
+    """
+
+    audio = Robbie9000.audio
 
     if isinstance(sound_string, dict):
         sound_string = sound_string['melody']
 
     sequence = [(note_duration.split(',')[0], float(note_duration.split(',')[1])) for note_duration in sound_string.split('; ')]
 
-    p = pyaudio.PyAudio()
-    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=sample_rate, output=True)
+    stream = audio.open(format=pyaudio.paFloat32, channels=1, rate=sample_rate, output=True)
 
     for note, duration in sequence:
         freq = note_to_frequency(note)
@@ -103,7 +87,7 @@ def play_sound(sound_string,
 
     stream.stop_stream()
     stream.close()
-    p.terminate()
+
 
 def generate_wave(freq, duration, sample_rate=44100, wave_type='sine', decay_factor=0.0):
     t = np.linspace(0, duration, int(duration * sample_rate), False)
@@ -150,12 +134,14 @@ def main():
     # for wave_type in ["sine", "square", "triangle", "sawtooth"]:
     # play_sound(beeps['imperial_march'], speed_factor=0.25)
 
+    audio = pyaudio.PyAudio()
+
     wave_type = "square"
     for name, info in beeps.items():
         print("wave type: ", wave_type)
         print("name: ", name)
         sound = info['melody']
-        play_sound(sound,  wave_type=wave_type, decay_factor=0.0)
+        play_sound(sound, audio, wave_type=wave_type, decay_factor=0.0)
         print()
 
     print("Done.")

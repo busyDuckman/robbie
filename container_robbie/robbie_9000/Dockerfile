@@ -6,16 +6,17 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y pulseaudio pulseeffects openjdk-11-jre wget
 
-RUN apt-get update && apt-get install -y \
-    libasound2 \
-    bluez \
-    bluez-tools \
-    pulseaudio \
-    pulseaudio-module-bluetooth \
-    alsa-utils \
-    --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y \
+#    libasound2 \
+#    bluez \
+#    bluez-tools \
+#    pulseaudio \
+#    pulseaudio-module-bluetooth \
+#    alsa-utils \
+#    --no-install-recommends \
+#    && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y alsa-utils
 
 # Set the working directory to the 'robot' directory
 WORKDIR /robbie/code_robbie
@@ -51,7 +52,7 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 ENV PYTHONPATH="${PYTHONPATH}:~/.local/lib/python3.11/site-packages"
 
 EXPOSE 8000
+#pulseaudio --start && \
 
-CMD pulseaudio --start && \
-    uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1 --log-level info
+CMD python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1 --log-level info
 
