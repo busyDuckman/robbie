@@ -1,5 +1,24 @@
 # Use the official Python 3.11 image as the base
-FROM python:3.11
+#FROM python:3.11
+FROM balenalib/raspberrypi4-64-debian-python:3.11-bullseye
+
+# Expose /dev and /sys directories to the container
+#VOLUME [ "/dev", "/sys" ]
+
+# lets patch in raspberry pi stuff
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+        libraspberrypi-dev \
+        raspberrypi-kernel \
+        raspberrypi-kernel-headers \
+        gcc \
+        git \
+        build-essential
+
+
+# -----------------------------------------------------------------------
+# 1) setup sound
 
 # Update packages and install necessary dependencies
 RUN apt-get update && \
@@ -18,6 +37,84 @@ RUN apt-get update && \
 
 RUN apt-get update && apt-get install -y alsa-utils
 
+# -----------------------------------------------------------------------
+# 2) setup the display
+RUN mkdir -p /robbie/third_party
+WORKDIR /robbie/third_party
+
+RUN apt-get update && \
+    apt-get install -y build-essential autoconf automake libtool git wget unzip
+
+# Download the BCM2835 libraries
+RUN wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.68.tar.gz && \
+    tar zxvf bcm2835-1.68.tar.gz
+
+# Configure and build the BCM2835 libraries
+WORKDIR /robbie/third_party/bcm2835-1.68
+RUN ./configure && \
+     make
+# If this check fails, it's because at this stage we dont have access to the PI's hardware.
+# RUN make check
+RUN make install
+WORKDIR /robbie/third_party
+
+# Install WiringPi
+# Add the package repository and GPG key
+#RUN echo "deb http://archive.raspberrypi.org/debian/ buster main" > /etc/apt/sources.list.d/wiringpi.list
+#RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add -
+
+# Update the package list and install wiringPi
+RUN #apt-get update && \
+#    apt-get install -y wiringpi
+
+
+#RUN wget https://project-downloads.drogon.net/wiringpi-latest.deb
+#RUN dpkg -i wiringpi-latest.deb
+#    gpio -v
+
+# RUN apt-get install -y wiringpi
+
+#ENV CFLAGS="-I/usr/local/include -L/usr/local/lib"
+#RUN git clone https://github.com/WiringPi/WiringPi
+#WORKDIR /robbie/third_party/WiringPi
+#RUN sed -i 's/sudo //g' build  # Remove sudo from the build script
+
+## Create dummy uninstall and install scripts
+#RUN echo '#!/bin/sh' > /usr/local/bin/uninstall && \
+#    chmod +x /usr/local/bin/uninstall && \
+#    echo '#!/bin/sh' > /usr/local/bin/install && \
+#    chmod +x /usr/local/bin/install
+#
+## Remove sudo from build script
+## RUN sed -i 's/sudo //g' build
+#RUN ./build
+
+
+RUN echo "deb http://archive.raspberrypi.org/debian/ bullseye main" >> /etc/apt/sources.list.d/raspi.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0x82B129927FA3303E && \
+    apt-get update && \
+    apt-get install -y wiringpi && \
+    rm /etc/apt/sources.list.d/raspi.list && \
+    apt-get clean
+
+WORKDIR /robbie/third_party
+
+
+RUN apt-get update
+RUN pip3 install --upgrade pip
+# RUN apt-get install -y python3-pip python3-pil python3-numpy
+
+RUN pip3 install RPi.GPIO
+RUN pip3 install spidev
+
+
+# download the example code so we can test as nessesary
+RUN wget https://www.waveshare.com/w/upload/8/8d/LCD_Module_RPI_code.zip && \
+    unzip ./LCD_Module_RPI_code.zip
+
+# -----------------------------------------------------------------------
+# 3) SETUP THE ROBBIE-9000 SYSTEM
+
 # Set the working directory to the 'robot' directory
 WORKDIR /robbie/code_robbie
 
@@ -35,6 +132,25 @@ RUN useradd -m -s /bin/bash robbie  && \
     chown -R robbie:robbie /run/user/1000 && \
     mkdir -p /home/robbie/.config/pulse && \
     chown -R robbie:robbie /home/robbie/.config/pulse
+
+# Some hoops so that gpio acess does not require sudo
+#COPY container_robbie/robbie_9000/99-gpio.rules /etc/udev/rules.d/
+#COPY container_robbie/robbie_9000/spi.rules /etc/udev/rules.d/
+#
+#RUN groupadd gpio && \
+#    usermod -a -G gpio robbie && \
+#    groupadd -f spi && \
+#    usermod -a -G spi robbie
+#
+## reload (IDK whatever at this point)
+#RUN apt-get update && \
+#    apt-get install -y udev && \
+#    systemctl enable udev && \
+#    udevadm control --reload-rules && \
+#    udevadm trigger
+
+#RUN groupadd -f gpio && \
+#    usermod -a -G gpio robbie \
 
 # Switch to the non-root user
 USER robbie

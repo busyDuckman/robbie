@@ -12,14 +12,25 @@ services:
     networks:
       - robbie_net
     devices:
+      # audio
       - "/dev/snd:/dev/snd"
       - "/dev/bus/usb:/dev/bus/usb"
+
+      # SPI (display)
+      - "/dev/spidev0.0:/dev/spidev0.0"
+      - "/dev/spidev0.1:/dev/spidev0.1"
+      - "/dev/mem:/dev/mem"
     volumes:
       - "/robbie/code_robbie:/robbie/code_robbie"
+
+      # audio
       - "$HOME/.config/rhasspy/profiles:/profiles"
       - "/etc/localtime:/etc/localtime:ro"
       - "$HOME/.config/pulse/cookie:/root/.config/pulse/cookie"
       - "/run/user/1000/pulse:/run/user/1000/pulse"
+
+      # SPI (display)
+      - "/sys:/sys"
     environment:
       - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
     ports:
