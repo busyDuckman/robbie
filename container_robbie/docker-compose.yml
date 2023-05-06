@@ -20,6 +20,12 @@ services:
       - "/dev/spidev0.0:/dev/spidev0.0"
       - "/dev/spidev0.1:/dev/spidev0.1"
       - "/dev/mem:/dev/mem"
+
+      - "/dev/gpiomem"
+
+#    group:
+#      - gpio
+#      - spi
     volumes:
       - "/robbie/code_robbie:/robbie/code_robbie"
 
@@ -37,15 +43,6 @@ services:
       - "8000:8000"
       - "12101:12101"
       - "12183:12183"
-
-#  marytts:
-#    build:
-#      dockerfile: marrytts/Dockerfile
-#    ports:
-#      - '59125:59125'
-#    restart: on-failure
-#    networks:
-#      - robbie_net
 
   marytts:
     image: synesthesiam/marytts:5.2
