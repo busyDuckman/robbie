@@ -20,7 +20,7 @@ class Robbie9000(metaclass=_Robbie9000Meta):
     """
     Singleton class for accessing global Robbie9000 settings and resources.
 
-    Example usage:
+    Example:
         Robbie9000.audio_instance = pyaudio.PyAudio()
         out_dev_num = Robbie9000.output_device_num
 

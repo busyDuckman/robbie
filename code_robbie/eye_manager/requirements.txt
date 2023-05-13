@@ -1,0 +1,10 @@
+numpy
+pillow
+PyOpenGL
+# this does not isnstall, can't be bother figuring it out right now
+# I will need to fix it before doing the GLSL version of the eye.
+# PyOpenGL-accelerate
+glfw
+scipy
+# ray
+opencv-python

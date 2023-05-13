@@ -121,6 +121,48 @@ To verify docker is running, try:
 
     docker run hello-world
 
+# Step 3 Enabling SPI and SPI_1 Interfaces on Raspberry Pi 4 (Running Ubuntu)
+To use the eye dispays, you need to enable the primary (spi0) and secondary (spi1) SPI interfaces:
+
+Open the config.txt file, which is located in the /boot/firmware directory.
+
+    sudo nano /boot/firmware/config.txt
+
+The primary SPI interface is likely already enabled.   
+Look for a line that reads dtparam=spi=on. If it's not present, add it to the file.
+
+Enable the secondary SPI interface (spi1) by adding the following line after dtparam=spi=on:
+
+    dtoverlay=spi1-1cs
+
+Your config.txt file should now look a little like this:
+
+    [pi4]
+    max_framebuffers=2
+    arm_boost=1
+    
+    [all]
+    # Enable the audio output, I2C and SPI interfaces on the GPIO header. As these
+    # parameters related to the base device-tree they must appear *before* any
+    # other dtoverlay= specification
+    dtparam=audio=on
+    dtparam=i2c_arm=on
+    dtparam=spi=on
+
+    # Enable the additional SPI interface
+    dtoverlay=spi1-1cs
+
+
+Save, and reboot your Raspberry Pi for the changes to take effect.
+
+    sudo reboot now
+
+After the reboot, the new SPI device should appear as /dev/spidev1.0 in your system.
+You can check this by running ls /dev/spi* in the terminal, you should see:
+
+    robbie@robbie-9000:~$ ls /dev/spi*
+    /dev/spidev0.0  /dev/spidev0.1  /dev/spidev1.0
+
 ## final steps
 
 # install the robbie software

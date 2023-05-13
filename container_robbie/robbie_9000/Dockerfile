@@ -1,6 +1,7 @@
 # Use the official Python 3.11 image as the base
 #FROM python:3.11
-FROM balenalib/raspberrypi4-64-debian-python:3.11-bullseye
+#FROM balenalib/raspberrypi4-64-debian-python:3.11-bullseye
+FROM pi4_base:latest
 
 # Expose /dev and /sys directories to the container
 #VOLUME [ "/dev", "/sys" ]

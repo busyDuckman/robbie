@@ -1,12 +1,21 @@
 version: "3.9"
 
 services:
+  pi4_base:
+    build:
+      context: ../container_robbie/pi4_base/Dockerfile
+      dockerfile: Dockerfile.base
+    image: pi4_base:latest
+    volumes:
+      - "/robbie/code_robbie:/robbie/code_robbie"
+
   robbie_robot_tts:
     build:
       context: ../
       dockerfile: container_robbie/robbie_9000/Dockerfile
     depends_on:
       - marytts
+      - eye_manager
     privileged: true
     restart: no
     networks:
@@ -16,18 +25,8 @@ services:
       - "/dev/snd:/dev/snd"
       - "/dev/bus/usb:/dev/bus/usb"
 
-      # SPI (display)
-      - "/dev/spidev0.0:/dev/spidev0.0"
-      - "/dev/spidev0.1:/dev/spidev0.1"
-      - "/dev/mem:/dev/mem"
-
-      - "/dev/gpiomem"
-
-#    group:
-#      - gpio
-#      - spi
     volumes:
-      - "/robbie/code_robbie:/robbie/code_robbie"
+#      - "/robbie/code_robbie:/robbie/code_robbie"
 
       # audio
       - "$HOME/.config/rhasspy/profiles:/profiles"
@@ -43,6 +42,25 @@ services:
       - "8000:8000"
       - "12101:12101"
       - "12183:12183"
+
+  eye_manager:
+    build:
+      context: ../
+      dockerfile: container_robbie/eye_manager/Dockerfile
+    privileged: true
+    restart: on-failure
+    networks:
+        - robbie_net
+    devices:
+      # SPI (display)
+      - "/dev/spidev0.0:/dev/spidev0.0"
+      - "/dev/spidev1.0:/dev/spidev1.0"
+      - "/dev/mem:/dev/mem"
+      - "/dev/gpiomem"
+    volumes:
+      - "/robbie/code_robbie:/robbie/code_robbie"
+        # SPI (display)
+      - "/sys:/sys"
 
   marytts:
     image: synesthesiam/marytts:5.2
