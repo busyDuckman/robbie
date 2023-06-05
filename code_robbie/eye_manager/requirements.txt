@@ -6,5 +6,4 @@ PyOpenGL
 # PyOpenGL-accelerate
 glfw
 scipy
-# ray
 opencv-python

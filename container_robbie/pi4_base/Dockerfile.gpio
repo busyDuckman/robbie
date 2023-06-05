@@ -1,0 +1,20 @@
+FROM pi4_base:latest
+
+# Some hoops so that gpio acess does not require sudo
+#COPY container_robbie/robbie_9000/99-gpio.rules /etc/udev/rules.d/
+#COPY container_robbie/robbie_9000/spi.rules /etc/udev/rules.d/
+#
+RUN groupadd gpio && \
+    usermod -a -G gpio robbie && \
+    groupadd -f spi && \
+    usermod -a -G spi robbie
+#
+## reload (IDK whatever at this point)
+RUN apt-get update && \
+    apt-get install -y udev && \
+    systemctl enable udev
+#    udevadm control --reload-rules && \
+#    udevadm trigger
+
+#RUN groupadd -f gpio && \
+#    usermod -a -G gpio robbie \

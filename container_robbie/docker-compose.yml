@@ -3,11 +3,25 @@ version: "3.9"
 services:
   pi4_base:
     build:
-      context: ../container_robbie/pi4_base/Dockerfile
-      dockerfile: Dockerfile.base
+      context: ../
+      dockerfile: container_robbie/pi4_base/Dockerfile.base
     image: pi4_base:latest
     volumes:
       - "/robbie/code_robbie:/robbie/code_robbie"
+    restart: "no"
+    entrypoint: []
+
+  pi4_base_gpio:
+    build:
+      context: ../
+      dockerfile: container_robbie/pi4_base/Dockerfile.base
+    depends_on:
+      - pi4_base
+    image: pi4_base_gpio:latest
+    volumes:
+      - "/robbie/code_robbie:/robbie/code_robbie"
+    restart: "no"
+    entrypoint: [ ]
 
   robbie_robot_tts:
     build:
@@ -16,6 +30,7 @@ services:
     depends_on:
       - marytts
       - eye_manager
+      - pi4_base
     privileged: true
     restart: no
     networks:
@@ -47,6 +62,8 @@ services:
     build:
       context: ../
       dockerfile: container_robbie/eye_manager/Dockerfile
+    depends_on:
+      - pi4_base_gpio
     privileged: true
     restart: on-failure
     networks:

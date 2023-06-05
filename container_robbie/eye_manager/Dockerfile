@@ -1,3 +1,4 @@
+FROM pi4_base_gpio:latest
 
 # -----------------------------------------------------------------------
 # 2) setup the display
@@ -23,7 +24,7 @@ WORKDIR /robbie/third_party
 #RUN wget -qO - https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | apt-key add -
 
 # Update the package list and install wiringPi
-RUN #apt-get update && \
+#RUN apt-get update && \
 #    apt-get install -y wiringpi
 
 
@@ -49,18 +50,18 @@ RUN #apt-get update && \
 #RUN ./build
 
 
-RUN echo "deb http://archive.raspberrypi.org/debian/ bullseye main" >> /etc/apt/sources.list.d/raspi.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0x82B129927FA3303E && \
-    apt-get update && \
-    apt-get install -y wiringpi && \
-    rm /etc/apt/sources.list.d/raspi.list && \
-    apt-get clean
+#RUN echo "deb http://archive.raspberrypi.org/debian/ bullseye main" >> /etc/apt/sources.list.d/raspi.list && \
+#    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0x82B129927FA3303E && \
+#    apt-get update && \
+#    apt-get install -y wiringpi && \
+#    rm /etc/apt/sources.list.d/raspi.list && \
+#    apt-get clean
 
 WORKDIR /robbie/third_party
 
 
 RUN apt-get update
-RUN pip3 install --upgrade pip
+# RUN pip3 install --upgrade pip
 # RUN apt-get install -y python3-pip python3-pil python3-numpy
 
 RUN pip3 install RPi.GPIO

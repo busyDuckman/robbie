@@ -156,38 +156,6 @@ def render_eye(draw: ImageDraw.Draw,
 # -----------------------------------------------------------------------------
 
 
-
-
-# def render_eye_to_np_array(pd, point_to_look_at, image_size=(256, 256)):
-#     img = render_eye(pd, point_to_look_at, image_size)
-#     return np.array(img)
-
-# def animate_eye(pd, radius=500, image_size=(256, 256)):
-#     window_name = "Eye Animation"
-#     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-#     cv2.resizeWindow(window_name, *image_size)
-#
-#     while True:
-#         angle = 2 * math.pi * (cv2.getTickCount() % 3000) / 3000
-#         x = radius * math.cos(angle)
-#         y = radius * math.sin(angle)
-#         point_to_look_at = (x, y, 1000)
-#
-#         frame = render_eye_to_np_array(pd, point_to_look_at, image_size)
-#         cv2.imshow(window_name, frame)
-#
-#         key = cv2.waitKey(1) & 0xFF
-#         if key == ord('q'):
-#             break
-#
-#     cv2.destroyAllWindows()
-
-
-
-
-
-
-
 def animate_eye(pd, radius=500, image_size=(256, 256)):
     import cv2
     window_name = "Eye Animation"

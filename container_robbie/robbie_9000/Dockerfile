@@ -26,6 +26,13 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y pulseaudio pulseeffects openjdk-11-jre wget
 
+# extra hoops to get libportaudio2
+RUN echo "deb http://deb.debian.org/debian/ buster main" > /etc/apt/sources.list.d/debian.list
+RUN apt-get update
+
+# stuff needed for pyaudio
+RUN apt-get install -y libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0
+
 #RUN apt-get update && apt-get install -y \
 #    libasound2 \
 #    bluez \
@@ -117,41 +124,7 @@ RUN wget https://www.waveshare.com/w/upload/8/8d/LCD_Module_RPI_code.zip && \
 # 3) SETUP THE ROBBIE-9000 SYSTEM
 
 # Set the working directory to the 'robot' directory
-WORKDIR /robbie/code_robbie
 
-# extra hoops to get libportaudio2
-RUN echo "deb http://deb.debian.org/debian/ buster main" > /etc/apt/sources.list.d/debian.list
-RUN apt-get update
-
-# stuff needed for pyaudio
-RUN apt-get install -y libasound2-dev portaudio19-dev libportaudio2 libportaudiocpp0
-
-# Create a non-root user
-RUN useradd -m -s /bin/bash robbie  && \
-    chown -R robbie:robbie /robbie/code_robbie && \
-    mkdir -p /run/user/1000 && \
-    chown -R robbie:robbie /run/user/1000 && \
-    mkdir -p /home/robbie/.config/pulse && \
-    chown -R robbie:robbie /home/robbie/.config/pulse
-
-# Some hoops so that gpio acess does not require sudo
-#COPY container_robbie/robbie_9000/99-gpio.rules /etc/udev/rules.d/
-#COPY container_robbie/robbie_9000/spi.rules /etc/udev/rules.d/
-#
-RUN groupadd gpio && \
-    usermod -a -G gpio robbie && \
-    groupadd -f spi && \
-    usermod -a -G spi robbie
-#
-## reload (IDK whatever at this point)
-RUN apt-get update && \
-    apt-get install -y udev && \
-    systemctl enable udev
-#    udevadm control --reload-rules && \
-#    udevadm trigger
-
-#RUN groupadd -f gpio && \
-#    usermod -a -G gpio robbie \
 
 # Switch to the non-root user
 USER robbie
