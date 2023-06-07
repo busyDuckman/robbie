@@ -7,3 +7,4 @@ PyOpenGL
 glfw
 scipy
 opencv-python
+numba

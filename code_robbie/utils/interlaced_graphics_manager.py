@@ -2,48 +2,10 @@ import numpy as np
 import cv2
 from PIL import Image
 
-def _pre_mul_alpha_rgba(img):
-    """
-    This takes an image and creates:
-        A premultiplied alpha [R,G,B]
-        A 1-alpha mask as [a,a,a].
-    :param img:
-    :return:
-    """
-    alpha = img[:, :, 3] / 255.0
-    alpha_rgb = np.repeat(alpha[:, :, np.newaxis], 3, axis=2)
-    premult_img = cv2.convertScaleAbs(img[:, :, :3] * alpha_rgb)
-    return premult_img, 1 - alpha_rgb
-
-def _pre_mul_alpha_rgb_and_a(img, alpha):
-    """
-    This takes an image and creates:
-        A premultiplied alpha [R,G,B]
-        A 1-alpha mask as [a,a,a].
-    :param img:
-    :return:
-    """
-    alpha = alpha / 255.0
-    alpha_rgb = np.repeat(alpha[:, :, np.newaxis], 3, axis=2)
-    premult_img = cv2.convertScaleAbs(img[:, :, :3] * alpha_rgb)
-    return premult_img, 1 - alpha_rgb
+from utils.graphics_manager import Sprite, Composer, _pre_mul_alpha_rgb_and_a
 
 
-
-def rescale_img(img, scale):
-    # get the original image dimensions
-    original_height, original_width = img.shape[:2]
-
-    # calculate the new dimensions
-    new_width = max(1, int(original_width * scale))
-    new_height = max(1, int(original_height * scale))
-
-    # resize the image
-    resized_img = cv2.resize(img, (new_width, new_height))
-
-    return resized_img
-
-class InterlacedImage:
+class InterlacedSprite(Sprite):
     """
     This is the image format used for realtime rendering.
     We are running an interlaced display, and as such only need
@@ -52,7 +14,7 @@ class InterlacedImage:
     The format is two BGR images with premultiplied alpha channel.
     """
 
-    _internal_format: str = "BGR"  # NO ALPHA
+    _internal_format: str = "RGB"  # NO ALPHA
     def __init__(self, img, fmt: str = "RGBA", strip_alpha=False):
         """
         Creates a new interlaced Image.
@@ -94,7 +56,7 @@ class InterlacedImage:
         channels = {channel: img[:, :, i] for i, channel in enumerate(fmt)}
 
         # compose to native format (without alpha)
-        this_fmt = InterlacedImage._internal_format
+        this_fmt = InterlacedSprite._internal_format
         native_img = cv2.merge([channels[char] for char in this_fmt])
 
         if strip_alpha:
@@ -118,7 +80,7 @@ class InterlacedImage:
         self.num_even_rows = self.height - self.num_odd_rows
 
     def __str__(self):
-        return f"InterlacedImage(w={self.width}, h={self.height}, a={self.alpha_composite})"
+        return f"InterlacedSprite(w={self.width}, h={self.height}, a={self.alpha_composite})"
 
     def resolve(self, y, even_scan):
         if not even_scan:
@@ -135,7 +97,7 @@ class InterlacedImage:
         return self.odd_rows_alpha
 
 
-class InterlacedComposer:
+class InterlacedComposer(Composer):
     """
     This handles composing images that are interlaced and double buffered.
     To save on system resources, only odd or even rows are composed in
@@ -154,6 +116,8 @@ class InterlacedComposer:
         :param w: Width.
         :param h: Height, can be odd that won't upset anything.
         """
+        super().__init__(w, h)
+
         self.num_odd_rows = h // 2
         self.num_even_rows = h - self.num_odd_rows
         self.odd_buffers = [np.zeros((self.num_odd_rows, w, 3), dtype=np.uint8)
@@ -164,8 +128,10 @@ class InterlacedComposer:
                         self.even_buffers[1], self.odd_buffers[1]]
         self.frame: int = 0
         self.draw_buffer = self.even_buffers[0]
+        self.render_buffer = self.even_buffers[1]
         # self.current_rows = self.num_even_rows
         self.even_scan = True
+
     def next_frame(self) -> bool:
         """
         Advances to the next draw buffer.
@@ -173,6 +139,7 @@ class InterlacedComposer:
         """
         self.frame += 1
         self.draw_buffer = self.buffers[self.frame % 4]
+        self.render_buffer = self.buffers[(self.frame+2) % 4]
         # self.current_rows = self.num_even_rows
         # if self.frame % 2:
         #     self.current_rows = self.num_odd_rows
@@ -186,7 +153,7 @@ class InterlacedComposer:
         """
         self.draw_buffer[...] = 0
 
-    def paste_image(self, img: InterlacedImage, x, y) -> None:
+    def draw_sprite(self, img: InterlacedSprite, x, y) -> None:
         """
         Pastes a InterlacedImage at x, y.
         Only the necessary rows will be copied to the draw buffer.
@@ -229,3 +196,6 @@ class InterlacedComposer:
             buffer[::2] = self.draw_buffer
         else:
             buffer[1::2] = self.draw_buffer
+
+    def get_native_sprite(self, source) -> Sprite:
+        return InterlacedSprite(source)
