@@ -142,11 +142,13 @@ class Composer:
         """
         self.width = w
         self.height = h
-        self.buffers = [np.zeros((h, w, 3), dtype=np.uint8)
+        self.buffers = [np.zeros((h, w, 4), dtype=np.uint8)
                         for _ in range(2)]
         self.frame: int = 0
         self.draw_buffer = self.buffers[self.frame % 2]
         self.render_buffer = self.buffers[(self.frame + 1) % 2]
+
+
 
     def get_native_sprite(self, source) -> Sprite:
         return Sprite(source)
@@ -192,7 +194,8 @@ class Composer:
                 # render_buffer[sp_y:sp_y + sp_height, sp_x:sp_x + sp_width] = \
                 #     cv2.convertScaleAbs(sp_image[:, :, :3] + roi * sp_alpha_inv)
 
-                roi = self.draw_buffer[y:end_y, x:x + sprite.width]
+                # roi = self.draw_buffer[y:end_y, x:x + sprite.width]  # 3 byte pixels
+                roi = self.draw_buffer[y:end_y, x:x + sprite.width, :3]   # 4 byte pixels
                 np.add(img[:, :, :3], roi * alpha, out=roi, casting="unsafe")
             else:
                 # We simply replace the image in the draw buffer with the new image.

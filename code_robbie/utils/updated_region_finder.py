@@ -5,7 +5,16 @@ import numpy as np
 from PIL import ImageChops
 from scipy.ndimage import label
 
-from numba import njit
+from numba import njit, jit
+
+
+@jit(nopython=True)
+def any_along_last_axis(arr):
+    result = np.zeros_like(arr[..., 0], dtype=np.bool_)
+    for i in range(arr.shape[-1]):
+        result |= arr[..., i]
+    return result
+
 
 
 def regions_by_separate_region(image1, image2):
@@ -36,8 +45,8 @@ def regions_by_separate_region(image1, image2):
 
     return bounding_rectangles
 
-
-def grow_rec(diff, x, y, threshold=16):
+@njit
+def grow_rec_old(diff, x, y, threshold=16):
     """
     creates a 1 x 1 rec at x, y, using boolean values in diff.
 
@@ -88,6 +97,33 @@ def grow_rec(diff, x, y, threshold=16):
     return x1, y1, x2, y2
 
 
+@njit
+def grow_rec(diff, x, y, threshold=16):
+    height, width = diff.shape
+    x1, y1, x2, y2 = x, y, x + 3, y + 3
+
+    slope = 2
+
+    growing = True
+    while growing:
+        growing = False
+
+        if x2 < (width-1) and (diff[y1+slope, x2+1] or diff[y2-slope, x2+1]):
+            # step = max(x2 - x1 / 4, 1)
+            x2 += 1
+            growing = True
+
+        if x1 > 0 and (diff[y1+slope, x1-1] or diff[y2-slope, x1-1]):
+            x1 -= 1
+            growing = True
+
+        if y2 < (height-1) and (diff[y2+1, x1+slope] or diff[y2+1, x2-slope]):
+            y2 += 1
+            growing = True
+
+    return x1, y1, x2, y2
+
+
 
 
     # height, width = diff.shape
@@ -106,10 +142,11 @@ def grow_rec(diff, x, y, threshold=16):
     #
     # return x1, y1, x2, y2
 
-
+@njit
 def regions_by_fitted_rec(image1, image2):
     diff = np.abs(image1 - image2)
-    diff = np.any(diff > 0, axis=-1)
+    # diff = np.any(diff > 0, axis=-1)
+    diff = any_along_last_axis(diff > 0)
     num_pixels_changed = np.sum(diff)
     num_pixels_flagged = 0
 
