@@ -68,7 +68,7 @@ def blit_window(disp: LCD_1inch28.LCD_1inch28,
     x, y, x2, y2 = box
     x, y, x2, y2 = int(x), int(y), int(x2), int(y2)
 
-    # I'm getting some trails, nude this to make it bigger.
+    # I'm getting some trails, need this to make it bigger.
     x2, y2 = x2+1, y2+1
     x2, y2 = min(x2, disp.width), min(y2, disp.height)
 

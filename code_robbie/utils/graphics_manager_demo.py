@@ -124,9 +124,9 @@ def _demo():
         # Display the image
         boxes, n_changed, n_flagged = g.find_dirty_recs(RegionAlg.FITTED_RECS)
         # boxes = g.find_dirty_recs(RegionAlg.SEPARATE_REGION)
-        # dbg_image = generate_debug_image(render_buffer, boxes)
+        dbg_image = generate_debug_image(render_buffer, boxes)
 
-        dbg_image = render_buffer.copy()
+        # dbg_image = render_buffer.copy()
         dbg_image[:, 0] = [128, 128, 128, 255]  # gray line to separate images on screen.
 
 

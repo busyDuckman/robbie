@@ -1,5 +1,13 @@
 ignore/
 
+code_robbie/cpp/eye_manager/.vscode/
+code_robbie/cpp/eye_manager/cmake-build-debug-remote/
+code_robbie/cpp/eye_manager/pc_version/eye_manager_pc/.vs/
+code_robbie/cpp/eye_manager/pc_version/eye_manager_pc/Debug/
+code_robbie/cpp/eye_manager/pc_version/eye_manager_pc/x64/
+*.opendb
+*.user
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

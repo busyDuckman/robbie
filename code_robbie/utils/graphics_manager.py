@@ -144,9 +144,14 @@ class Composer:
         self.height = h
         self.buffers = [np.zeros((h, w, 4), dtype=np.uint8)
                         for _ in range(2)]
+
+        self.buffers_uint32 = [b.view(dtype=np.uint32).squeeze(axis=-1)
+                               for b in self.buffers]
         self.frame: int = 0
         self.draw_buffer = self.buffers[self.frame % 2]
         self.render_buffer = self.buffers[(self.frame + 1) % 2]
+        self.draw_buffer_uint32 = self.buffers_uint32[self.frame % 2]
+        self.render_buffer_uint32 = self.buffers_uint32[(self.frame + 1) % 2]
 
 
 
@@ -161,6 +166,9 @@ class Composer:
         self.frame += 1
         self.draw_buffer = self.buffers[self.frame % 2]
         self.render_buffer = self.buffers[(self.frame+1) % 2]
+        self.draw_buffer_uint32 = self.buffers_uint32[self.frame % 2]
+        self.render_buffer_uint32 = self.buffers_uint32[(self.frame + 1) % 2]
+
         even_scan = not (self.frame % 2)
         return even_scan
 
@@ -205,6 +213,9 @@ class Composer:
             raise e
 
     def find_dirty_recs(self, algorithm: RegionAlg):
+        # if algorithm == algorithm.FITTED_RECS_32:
+        #     return algorithm(self.render_buffer_uint32, self.draw_buffer_uint32)
+        # else:
         return algorithm(self.render_buffer, self.draw_buffer)
 
     def __str__(self):
@@ -230,7 +241,8 @@ def generate_debug_image(img, boxes):
         overlay[y1:y2, x1:x2] = color
 
     dbg_image = cv2.addWeighted(overlay, 0.5, gray_image, 0.5, 0)
-
+    a = np.full(dbg_image.shape[:2] + (1,), 255, dtype=np.uint8)
+    dbg_image = np.dstack((dbg_image, a))
     return dbg_image
 
 

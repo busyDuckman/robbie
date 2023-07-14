@@ -7,6 +7,8 @@ from scipy.ndimage import label
 
 from numba import njit, jit
 
+from utils.regions_by_fitted_rec_32 import create_dirty_list, regions_by_fitted_rec_uint32
+
 
 @jit(nopython=True)
 def any_along_last_axis(arr):
@@ -142,6 +144,7 @@ def grow_rec(diff, x, y, threshold=16):
     #
     # return x1, y1, x2, y2
 
+
 @njit
 def regions_by_fitted_rec(image1, image2):
     diff = np.abs(image1 - image2)
@@ -164,10 +167,32 @@ def regions_by_fitted_rec(image1, image2):
     return recs, num_pixels_changed, num_pixels_flagged
 
 
+
+@njit
+def regions_by_fitted_rec_32(image1, image2, debug=False):
+    diff = np.not_equal(image1, image2)
+    num_pixels_changed = np.sum(diff) if debug else 1
+    num_pixels_flagged = 0
+
+    recs = []
+    for y, x in np.ndindex(diff.shape):
+        if diff[y, x]:
+            rec = grow_rec(diff, x, y)
+            x1, y1, x2, y2 = rec
+            diff[y1:y2, x1:x2] = False
+            recs.append(rec)
+
+            w, h = x2-x1, y2-y1
+            num_pixels_flagged += w * h
+
+    return recs, num_pixels_changed, num_pixels_flagged
+
+
 class RegionAlg(Enum):
     SEPARATE_REGION = regions_by_separate_region
     # SCAN_LINES = find_updated_regions_scan_lines
     FITTED_RECS = regions_by_fitted_rec
+    FITTED_RECS_32 = regions_by_fitted_rec_32
 
     def __call__(self, image1, image2):
         return self.value(image1, image2)

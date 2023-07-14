@@ -13,6 +13,18 @@ RUN groupadd gpio && \
 RUN apt-get update && \
     apt-get install -y udev && \
     systemctl enable udev
+
+WORKDIR /robbie/third_party
+RUN wget https://github.com/joan2937/pigpio/archive/master.zip  && \
+    unzip master.zip && \
+    cd pigpio-master && \
+    make && \
+    make install && \
+    rm -rf /robbie/third_party/master.zip
+
+
+WORKDIR /robbie/code_robbie
+
 #    udevadm control --reload-rules && \
 #    udevadm trigger
 

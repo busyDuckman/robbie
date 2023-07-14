@@ -10,6 +10,8 @@ RUN apt-get update && \
         gcc \
         git \
         build-essential \
+        rsync gdb lldb clang lld \
+        cowsay \
         python3-opengl \
         libglfw3-dev \
         autoconf automake \
