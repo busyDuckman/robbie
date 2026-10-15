@@ -1,0 +1,34 @@
+# Voice settings for services/
+
+# Tuned for Robbie's speaker (small and tinny).
+default:
+  # Voices in the MaryTTS image, with their locale. A voice speaks its own locale.
+  #   en_US  cmu-bdl-hsmm (male), cmu-rms-hsmm (male), cmu-slt-hsmm (female)
+  #   en_GB  dfki-obadiah-hsmm (male), dfki-spike-hsmm (male),
+  #          dfki-poppy-hsmm (female), dfki-prudence-hsmm (female)
+  #   de     bits3-hsmm (male), dfki-pavoque-neutral-hsmm (male), bits1-hsmm (female)
+  #   fr     enst-dennys-hsmm (male), upmc-pierre-hsmm (male),
+  #          enst-camille-hsmm (female), upmc-jessica-hsmm (female)
+  #   it     istc-lucia-hsmm (female)
+  #   ru     ac-irina-hsmm (female)
+  #   sv     stts-sv-hb-hsmm (male)
+  #   te     cmu-nk-hsmm (female)
+  #   tr     dfki-ot-hsmm (male)
+  
+  # voice: cmu-bdl-hsmm
+  # locale: en_US
+
+  voice: dfki-obadiah-hsmm
+  locale: en_GB
+
+  rate: 0.85
+
+  effects:
+    robot:
+      amount: 95.0
+
+local:
+  # Desktop or good speakers when running locally.
+  effects:
+    robot:
+      amount: 40.0  # placeholder, not tuned

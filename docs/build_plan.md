@@ -98,7 +98,9 @@ Related: [character brief](robbie_agent.md), [ethics and privacy design](../docs
 
 ## Settings file
 
-A settings file will be needed. It is JSON or a similar standard format, not a DSL, and is validated against a schema (for example with Pydantic Settings). Known settings so far:
+YAML is the default config format. Every config file has a `default:` section and a `local:` section that overrides it when running locally. A Python script in `scripts/` resolves this into a flat file before the image sees it, so services never see the sections.
+
+A settings file will be needed. It is YAML, not a DSL, and is validated against a schema (for example with Pydantic Settings). Known settings so far:
   - Public space mode.
   - Which persona.
   - Location (country and region), so Robbie knows which laws apply.

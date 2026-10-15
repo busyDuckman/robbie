@@ -7,6 +7,10 @@ _platform_guard := if os() == "windows" { error("\n" + RED + _banner_line + "\nR
 default:
     @just --justfile {{ quote(justfile()) }} --list
 
+
+## --------------------------------------------------------------------------------------------------------------------
+# Dev helpers
+
 #  This target gets the repo 100% ready for all development work (virtual environments etC)
 #   - it will ask some questions like where AI models are typically downloaded to etc.
 #   - it will copy .env.example to .env and set it up
@@ -28,9 +32,6 @@ vet: test
 clean:
 
 
-# install robbie to a pi, or update the installation on a pi
-deploy:
-
 # RAG data to help robbie perform tasks
 #   - A wizard that asks questions and informs about licence of downloaded work.
 fetch-data:
@@ -38,7 +39,62 @@ fetch-data:
 
 
 ## --------------------------------------------------------------------------------------------------------------------
+# robbie managment
+# install robbie to a pi, or update the installation on a pi
+deploy-robbie: _update_configs
+
+# get the pi version of robbie, and the backend running
+run-robbie: backend-up
+
+stop-robbie: backend-up
+
+
+# get the pi version of robbies backend running
+backend-up:
+
+# get the pi version of robbies backend running
+backend-down:
+
+
+## --------------------------------------------------------------------------------------------------------------------
+# local dev
+
+_compose_local := "docker compose -f deploy/compose.local.yaml"
+
+# (re-)start deploy/compose.local.yaml with any changes applied, so
+up: _update_configs
+    {{ _compose_local }} up -d --build --remove-orphans
+    @just --justfile {{ quote(justfile()) }} banner "Phoenix (traces):  http://localhost:6006" blue
+
+
+# stop all containers started by just up
+down:
+    {{ _compose_local }} down
+
+
+# force rebuild (all by default) docker containers
+rebuild *services:
+    {{ _compose_local }} build --no-cache {{ services }}
+
+
+_say_default_file := "testing/misc/wakeup_lines.txt"
+
+# speak text with the voice service (needs just up); with no text, speaks the wake-up lines
+say text="": _update_configs
+    @{{ if text == "" { "just --justfile " + quote(justfile()) + " banner " + quote("No text given, speaking " + _say_default_file) + " yellow" } else { "true" } }}
+    @mkdir -p .temp
+    @{{ if text == "" { "cat " + _say_default_file } else { "printf '%s' " + quote(text) } }} | curl -fsS --data-binary @- -o .temp/say.wav http://127.0.0.1:8100/say
+    @ffplay -nodisp -autoexit -loglevel error .temp/say.wav
+
+
+## --------------------------------------------------------------------------------------------------------------------
 # utils
+
+# Resolve config/ into .config/default (for the Pi) and .config/local (for just up),
+# and create any missing .env from its .env.example.
+_update_configs:
+    @python3 scripts/resolve_config.py .config config/robbie_agent config/robbie_services
+    @for f in config/*/.env.example; do [ -e "${f%.example}" ] || cp "$f" "${f%.example}"; done
 
 # Print a message inside a coloured banner. color: green, yellow, red or blue.
 [private]

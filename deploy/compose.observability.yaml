@@ -1,0 +1,20 @@
+# Trace viewer. Services send OpenTelemetry traces to http://phoenix:6006.
+# UI: http://localhost:6006 (bound to localhost only, so traces aren't exposed on the network).
+services:
+  phoenix:
+    image: arizephoenix/phoenix:version-20.18.0-nonroot
+    environment:
+      PHOENIX_TELEMETRY_ENABLED: "false"
+    ports:
+      - "127.0.0.1:6006:6006"
+    volumes:
+      - phoenix-data:/home/nonroot
+    # The image has no shell or curl, so the health check uses its Python.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:6006/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  phoenix-data:

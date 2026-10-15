@@ -1,0 +1,28 @@
+# Voice service and the MaryTTS server it uses.
+# Included by deploy/compose.local.yaml; try it with: just say "hello there"
+services:
+  voice:
+    build: .
+    env_file: ../../config/robbie_services/.env
+    environment:
+      OTEL_SERVICE_NAME: voice
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:6006
+      MARYTTS_URL: http://marytts:59125
+    ports:
+      - "127.0.0.1:8100:8000"
+    volumes:
+      - ../../.config/local:/config:ro
+    depends_on:
+      marytts:
+        condition: service_healthy
+      phoenix:
+        condition: service_healthy
+
+  # amd64 only, so it runs on the backend, not the Pi.
+  marytts:
+    image: synesthesiam/marytts:5.2
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:59125/version"]
+      interval: 5s
+      timeout: 3s
+      retries: 24

@@ -1,0 +1,6 @@
+# Everything on one machine.
+name: robbie
+
+include:
+  - compose.observability.yaml
+  - ../services/voice/compose.yaml

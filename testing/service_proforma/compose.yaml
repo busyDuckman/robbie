@@ -1,0 +1,14 @@
+# The proforma service sending traces to Phoenix.
+# docker compose up --build, then open http://localhost:6006 to see "heartbeat" spans.
+include:
+  - ../../deploy/compose.observability.yaml
+
+services:
+  proforma:
+    build: .
+    environment:
+      OTEL_SERVICE_NAME: service_proforma
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://phoenix:6006
+    depends_on:
+      phoenix:
+        condition: service_healthy

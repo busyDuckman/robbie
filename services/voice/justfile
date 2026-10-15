@@ -1,0 +1,14 @@
+default: serve
+
+# For those rare times when actions genuinely need to be taken after docker creates the container.
+setup:
+
+# Run unit tests
+test:
+
+# Run the service
+serve:
+    exec python3 -u serve_voice.py
+
+# Run CI tests
+vet: test

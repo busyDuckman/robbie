@@ -5,6 +5,10 @@ FROM alpine:3.24
 RUN apk add --no-cache just python3
 
 WORKDIR /service
+COPY requirements.txt ./
+RUN python3 -m venv /venv && /venv/bin/pip install --no-cache-dir -r requirements.txt
+ENV PATH="/venv/bin:$PATH"
+
 COPY justfile serve.py ./
 
 ENTRYPOINT ["just"]
