@@ -2,7 +2,7 @@
 # Motivation
 Robbie is meant to be the opposite of Siri, Alexa and Google assistant. 
 
-I feel those systems are subservient, product-like, tied to services, heavily censored, and overly corporate. Robbie should instead be: emotive, self-actuated, character-driven and open-source.
+I feel those systems are: subservient, product-like, tied to services, heavily censored, not privacy focused and overly corporate. Robbie should instead be: emotive, self-actuated, character-driven and open-source.
 
 
 __Emotive:__

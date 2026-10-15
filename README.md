@@ -13,5 +13,18 @@ New work for this repo:
 
   - **Inverse-Kinematics and controller re-write.** (planned) The previous system used the camera to establish the system pose. That may sound ill-advised, but was something I wanted to try, just to push and see what was possible (it's my hobby project so I indulged my curiosity). That was abandoned, the new system puts a magnetic rotary sensor on each motor.
 
+# Status
 
- 
+TRL 2, "technology concept formulated".
+
+
+# Architecture  
+
+Robbie is composed of 3 layers.
+
+  - A) The LLM: Decides when to speak, or take an action.
+  - B) The harness: State, behaviour, people present, attention target, mood, relationships. beeps, TTS. This layer is a collection of software components written in different languages. Manage mic, camera.
+  - C) Robot Control: Drive motors, read sensors (encoders, home sw). ROS 2 based. Look-around, eye graphics.
+
+
+This repo only covers layers A and B. Layer C is in a separate repo [TODO].
