@@ -26,3 +26,9 @@ Layer C lives in its own repository and is built on ROS 2. Ideally, any robot ca
 Status: Accepted
 
 The backend for the system (layer A and parts of B too heave to run on a PI) will be docker containers and be operational for VRAM of 16Gb and RAM of 32GB.
+
+## ADR 4: Development is done on Linux or WSL 2
+
+Status: Accepted
+
+Development is done on Linux, or on Windows inside WSL 2. Native Windows is not supported for development. On WSL 2, the repo should live in the WSL filesystem (for example under `/home`), not on a Windows drive under `/mnt/c`.

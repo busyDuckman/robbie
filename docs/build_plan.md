@@ -54,7 +54,8 @@ Related: [character brief](robbie_agent.md), [ethics and privacy design](../docs
     - Eval runs, model versions and prompt versions are tracked in a self-hosted MLflow.
 8. Tracing uses OpenTelemetry, sent to a self-hosted Langfuse or Phoenix, and records timings and tool calls but not conversation content.
 9. Tooling: `uv`, `ruff`, `pyright`, `pre-commit`, pytest, and Docker. GitHub Actions written but disabled at first.
-    - Dev containers, with the NVIDIA Container Toolkit for GPU access in Docker (via WSL2 on Windows).
+    - The NVIDIA Container Toolkit for GPU access in Docker (via WSL2 on Windows).
+    - Already discussed (2026-10-15): dev containers were dropped. Linux or WSL 2 (ADR 4) plus `just setup` covers the need, and dev containers make GPU, mic, webcam and Docker access awkward.
     - `just test` runs the basic unit tests. `just vet` runs full testing including model evals, which needs a GPU, so it runs manually or on a self-hosted runner rather than on hosted CI.
     - Already discussed (2026-10-14): MkDocs Material for published docs was rejected.
 

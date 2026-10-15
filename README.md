@@ -17,6 +17,14 @@ New work for this repo:
 
 TRL 2, "technology concept formulated".
 
+# Getting started.
+
+Development is done via Linux or WSL. 
+There  must be a "docker host" machine, by default the local box. You configure it in the .env as per:
+
+
+There is a justfile, it . 
+
 
 # Architecture  
 
@@ -36,7 +44,6 @@ This repo can run without robbie or a pi. There is a stand in for layer C and la
 # Repo Structure
 
     robbie/
-      .devcontainer/        dev container (GPU via the NVIDIA Container Toolkit)
       .github/workflows/    CI (disabled at first)
       .plans/               planning scratch space (copy to docs when concrete)
       .models/              If a model is not found elsewhere, and we need a local copy.
