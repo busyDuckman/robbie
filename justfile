@@ -19,4 +19,7 @@ clean:
 # install robbie to a pi, or update the installation on a pi
 deploy:
 
+# RAG data to help robbie perform tasks
+#   - A wizard that asks questions and informs about licence of downloaded work.
+fetch-data
 

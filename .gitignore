@@ -1,1 +1,72 @@
+# Project
+.models/
+data/
+.temp/
 CLAUDE.md
+.claude/settings.local.json
+
+# Secrets and local config (.env.example is committed)
+.env
+.env.*
+!.env.example
+
+# Runtime data. Memory stores and audit logs can hold personal data and must never be committed.
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Model weights and training output
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+
+# Eval, experiment and visualisation output
+logs/
+mlruns/
+mlartifacts/
+*.rrd
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Rust (Cargo.lock is committed for binaries)
+target/
+
+# C++ / CMake
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+*.o
+*.a
+*.so
+
+# ROS 2 / colcon
+install/
+log/
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+.DS_Store
+Thumbs.db
