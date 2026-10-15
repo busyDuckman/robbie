@@ -14,8 +14,10 @@ default:
 #  This target gets the repo 100% ready for all development work (virtual environments etC)
 #   - it will ask some questions like where AI models are typically downloaded to etc.
 #   - it will copy .env.example to .env and set it up
-setup:
-
+#   - just setup --redo  offers to set up the AI model again
+setup *flags:
+    @python3 scripts/setup/setup_models.py {{ flags }}
+    @for f in config/*/.env.example; do [ -e "${f%.example}" ] || cp "$f" "${f%.example}"; done
 
 # Basic unit test run
 test:
@@ -90,11 +92,9 @@ say text="": _update_configs
 ## --------------------------------------------------------------------------------------------------------------------
 # utils
 
-# Resolve config/ into .config/default (for the Pi) and .config/local (for just up),
-# and create any missing .env from its .env.example.
+# Resolve config/ into .config/default (for the Pi) and .config/local (for just up).
 _update_configs:
     @python3 scripts/resolve_config.py .config config/robbie_agent config/robbie_services
-    @for f in config/*/.env.example; do [ -e "${f%.example}" ] || cp "$f" "${f%.example}"; done
 
 # Print a message inside a coloured banner. color: green, yellow, red or blue.
 [private]

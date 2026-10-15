@@ -1,0 +1,36 @@
+# LLM options offered by just setup. The first is the default.
+# Files are fetched from Hugging Face at a pinned revision, so every setup gets the same weights.
+#
+# size_gb  download size of model + mmproj.
+# vram_gb  rough VRAM use with a 16K context and an f16 KV cache.
+
+models:
+  - name: Ministral-3-14B-Instruct
+    repo: mistralai/Ministral-3-14B-Instruct-2512-GGUF
+    revision: 74fac473c43357d7fb2671713608183cc72496d0
+    model: Ministral-3-14B-Instruct-2512-Q4_K_M.gguf
+    mmproj: Ministral-3-14B-Instruct-2512-BF16-mmproj.gguf
+    size_gb: 9.1
+    vram_gb: 12
+    licence: Apache-2.0
+    licence_url: https://www.apache.org/licenses/LICENSE-2.0
+
+  - name: Ministral-3-8B-Instruct
+    repo: mistralai/Ministral-3-8B-Instruct-2512-GGUF
+    revision: 0102285ad796bd99af90f58de616092e5630e970
+    model: Ministral-3-8B-Instruct-2512-Q4_K_M.gguf
+    mmproj: Ministral-3-8B-Instruct-2512-BF16-mmproj.gguf
+    size_gb: 6.1
+    vram_gb: 9
+    licence: Apache-2.0
+    licence_url: https://www.apache.org/licenses/LICENSE-2.0
+
+  - name: gemma-4-12B
+    repo: google/gemma-4-12B-it-qat-q4_0-gguf
+    revision: 29d097773436b69ff9feafd636ab4cf873786537
+    model: gemma-4-12b-it-qat-q4_0.gguf
+    mmproj: mmproj-gemma-4-12b-it-qat-q4_0.gguf
+    size_gb: 7.2
+    vram_gb: 9
+    licence: Apache-2.0
+    licence_url: https://ai.google.dev/gemma/docs/gemma_4_license
