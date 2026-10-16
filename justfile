@@ -21,10 +21,16 @@ setup *flags:
 
 # Basic unit test run
 test:
+    # robbie-lib, Python and the Rust port, against the shared cases in common/robbie-lib-test.
+    cd common/robbie-lib-py && uv run pytest -q
+    cargo test -q --manifest-path common/robbie-lib-rs/Cargo.toml
 
 
 # Full testing including model evals etc.
 vet: test
+    # Robbie's RELM table must load (relm exits non-zero on a bad table).
+    uv run -q --project common/robbie-lib-py relm --table config/relm_table.yaml < /dev/null > /dev/null
+    cargo run -q --manifest-path common/robbie-lib-rs/Cargo.toml --bin relm -- --table config/relm_table.yaml < /dev/null > /dev/null
     # Check container pattern stops cleanly when Docker sends SIGTERM.
     bash scripts/tests/check_lifecycle.sh "testing/service_proforma"
 

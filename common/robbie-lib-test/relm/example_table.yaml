@@ -1,0 +1,23 @@
+# The RELM to IRELM table from docs/relm.md, plus a few more for the tests.
+# Macro: IRELM
+p:           <PAUSE duration="0.5"/>           # paragraph pause
+pleasant:    <VAD v="4" a="3" d="3">
+happy:       <VAD v="4" a="4" d="3">
+ecstatic:    <VAD a="5" d="5">
+emphasis:    <PROSODY s="0.6" v="1.5" p="0.75">
+widen_eyes:  <MESSAGE sub="eyes" action="widen(0.8)"/>
+/widen_eyes: <MESSAGE sub="eyes" action="widen(None)"/>
+wink:        <MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>
+excited:     <VAD a="5"><PROSODY s="1.2" p="1.1">
+pirate:      <VOICE voice="cmu-bdl-hsmm" locale="en_US">
+whisper:     <PROSODY v="0.5" r="none">
+fanfare:     <BEEP melody="C4,0.1; E4,0.1; G4,0.1; C5,0.2; R,0.1; Eb5,0.2"/>
+ding:        <AUDIO file_name="ding.wav"/>
+time:        <AS format="datetime">
+date:        <AS format="datetime">
+us_date:     <AS format="datetime" locale="en_US">
+number:      <AS format="number">
+digits:      <AS format="digits">
+spell:       <AS format="characters">
+money:       <AS format="currency">
+unit:        <AS format="unit">

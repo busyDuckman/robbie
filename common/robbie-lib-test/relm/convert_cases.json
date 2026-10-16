@@ -1,0 +1,256 @@
+{
+  "_about": "RELM in, IRELM out. table defaults to example_table.yaml. options are the relm CLI flags (stateless, strict, locale, *_to_ssml). A case has output or error (an error kind).",
+  "cases": [
+    {
+      "name": "doc example, stack",
+      "input": "<happy> She asked me to buy <widen_eyes><emphasis>roses</emphasis></widen_eyes></happy>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><PROSODY s=\"0.6\" v=\"1.5\" p=\"0.75\">roses</PROSODY><MESSAGE sub=\"eyes\" action=\"widen(None)\"/></VAD></IRELM>"
+    },
+    {
+      "name": "doc example, stateless",
+      "input": "<happy> She asked me to buy <widen_eyes><emphasis>roses</emphasis></widen_eyes></happy>",
+      "options": {"stateless": true},
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/>roses<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+    },
+    {
+      "name": "lottery, stateless resolves none to the enclosing value",
+      "input": "<happy> I won <ecstatic>the lottery</ecstatic> but lost the ticket </happy>",
+      "options": {"stateless": true},
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/> I won <VAD v=\"4\" a=\"5\" d=\"5\"/>the lottery<VAD v=\"4\" a=\"4\" d=\"3\"/> but lost the ticket <VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+    },
+    {
+      "name": "lottery, stack",
+      "input": "<happy> I won <ecstatic>the lottery</ecstatic> but lost the ticket </happy>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"> I won <VAD a=\"5\" d=\"5\">the lottery</VAD> but lost the ticket </VAD></IRELM>"
+    },
+    {
+      "name": "plain text only",
+      "input": "Hello there.",
+      "output": "<IRELM>Hello there.</IRELM>"
+    },
+    {
+      "name": "empty",
+      "input": "",
+      "output": "<IRELM></IRELM>"
+    },
+    {
+      "name": "instant macros, open, self-closed or with a stray close",
+      "input": "a<p>b<p/>c</p>d<wink/>e",
+      "options": {"strict": true},
+      "output": "<IRELM>a<PAUSE duration=\"0.5\"/>b<PAUSE duration=\"0.5\"/>cd<MESSAGE sub=\"eyes\" action=\"wink(right)\"/><PAUSE duration=\"0.2\"/>e</IRELM>"
+    },
+    {
+      "name": "self-closed span macro opens and closes at once",
+      "input": "<widen_eyes/>look<happy/>",
+      "output": "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\"/>look<VAD v=\"4\" a=\"4\" d=\"3\"></VAD></IRELM>"
+    },
+    {
+      "name": "macro with two spans closes them in reverse",
+      "input": "<excited>wow</excited>",
+      "output": "<IRELM><VAD a=\"5\"><PROSODY s=\"1.2\" p=\"1.1\">wow</PROSODY></VAD></IRELM>"
+    },
+    {
+      "name": "macro with two spans, stateless",
+      "input": "<happy><excited>wow</excited></happy>",
+      "options": {"stateless": true},
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"4\" a=\"5\" d=\"3\"/><PROSODY p=\"1.1\" s=\"1.2\" r=\"none\" v=\"none\"/>wow<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+    },
+    {
+      "name": "explicit none in the table keeps the enclosing value",
+      "input": "<emphasis><whisper>psst</whisper></emphasis>",
+      "options": {"stateless": true},
+      "output": "<IRELM><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"0.5\"/>psst<PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/></IRELM>"
+    },
+    {
+      "name": "same macro nested",
+      "input": "<happy>a<happy>b</happy>c</happy>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">a<VAD v=\"4\" a=\"4\" d=\"3\">b</VAD>c</VAD></IRELM>"
+    },
+    {
+      "name": "voice span, stateless",
+      "input": "<pirate>arr</pirate>",
+      "options": {"stateless": true},
+      "output": "<IRELM><VOICE voice=\"cmu-bdl-hsmm\" locale=\"en_US\"/>arr<VOICE voice=\"none\" locale=\"none\"/></IRELM>"
+    },
+    {
+      "name": "beep and audio",
+      "input": "<fanfare/>ta da<ding/>",
+      "output": "<IRELM><BEEP melody=\"C4,0.1; E4,0.1; G4,0.1; C5,0.2; R,0.1; Eb5,0.2\"/>ta da<AUDIO file_name=\"ding.wav\"/></IRELM>"
+    },
+    {
+      "name": "text is escaped, entities are decoded first",
+      "input": "3 < 5 & 6 > 2, Tom &amp; Jerry, &lt;not a tag&gt;, &#65;&#x42;, &nbsp;",
+      "output": "<IRELM>3 &lt; 5 &amp; 6 &gt; 2, Tom &amp; Jerry, &lt;not a tag&gt;, AB, &amp;nbsp;</IRELM>"
+    },
+    {
+      "name": "best effort: unknown tags are dropped, their text kept",
+      "input": "<bogus>q</bogus> <b>bold</b>",
+      "output": "<IRELM>q bold</IRELM>"
+    },
+    {
+      "name": "strict: unknown tag",
+      "input": "<bogus>q</bogus>",
+      "options": {"strict": true},
+      "error": "unknown_tag"
+    },
+    {
+      "name": "best effort: closing an outer macro closes the inner ones",
+      "input": "<happy>x<emphasis>y</happy>z</emphasis>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">x<PROSODY s=\"0.6\" v=\"1.5\" p=\"0.75\">y</PROSODY></VAD>z</IRELM>"
+    },
+    {
+      "name": "strict: mismatched close",
+      "input": "<happy>x<emphasis>y</happy>z</emphasis>",
+      "options": {"strict": true},
+      "error": "mismatched_close"
+    },
+    {
+      "name": "best effort: unclosed macros close at the end",
+      "input": "<happy>x<emphasis>y",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">x<PROSODY s=\"0.6\" v=\"1.5\" p=\"0.75\">y</PROSODY></VAD></IRELM>"
+    },
+    {
+      "name": "strict: unclosed",
+      "input": "<happy>x",
+      "options": {"strict": true},
+      "error": "unclosed_tag"
+    },
+    {
+      "name": "best effort: stray close is ignored",
+      "input": "a</happy>b",
+      "output": "<IRELM>ab</IRELM>"
+    },
+    {
+      "name": "strict: stray close",
+      "input": "a</happy>b",
+      "options": {"strict": true},
+      "error": "unexpected_close"
+    },
+    {
+      "name": "best effort: malformed tag is kept as text",
+      "input": "a <happy b",
+      "output": "<IRELM>a &lt;happy b</IRELM>"
+    },
+    {
+      "name": "strict: malformed tag",
+      "input": "a <happy b",
+      "options": {"strict": true},
+      "error": "bad_tag"
+    },
+    {
+      "name": "a lone < that does not start a tag is text, even when strict",
+      "input": "I <3 you, 1 < 2",
+      "options": {"strict": true},
+      "output": "<IRELM>I &lt;3 you, 1 &lt; 2</IRELM>"
+    },
+    {
+      "name": "best effort: params on a macro are ignored",
+      "input": "<happy level=\"2\">x</happy>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">x</VAD></IRELM>"
+    },
+    {
+      "name": "strict: params on a macro",
+      "input": "<happy level=\"2\">x</happy>",
+      "options": {"strict": true},
+      "error": "bad_tag"
+    },
+    {
+      "name": "best effort: macro names match case-insensitively",
+      "input": "<Happy>x</HAPPY>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">x</VAD></IRELM>"
+    },
+    {
+      "name": "strict: macro names are case-sensitive",
+      "input": "<Happy>x</Happy>",
+      "options": {"strict": true},
+      "error": "unknown_tag"
+    },
+    {
+      "name": "tags may have whitespace inside",
+      "input": "< happy >x</ happy ><wink />",
+      "options": {"strict": true},
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">x</VAD><MESSAGE sub=\"eyes\" action=\"wink(right)\"/><PAUSE duration=\"0.2\"/></IRELM>"
+    },
+    {
+      "name": "AS is expanded and keeps the surrounding whitespace",
+      "input": "Meet at<time> 14:30 </time>on <date>16/10/2026</date>.",
+      "output": "<IRELM>Meet at two thirty p m on the sixteenth of October twenty twenty six.</IRELM>"
+    },
+    {
+      "name": "AS uses the locale option",
+      "input": "<date>10/16/2026</date> <number>1234</number>",
+      "options": {"locale": "en_US"},
+      "output": "<IRELM>October sixteenth twenty twenty six one thousand two hundred thirty four</IRELM>"
+    },
+    {
+      "name": "AS locale param beats the locale option",
+      "input": "<us_date>10/16/2026</us_date>",
+      "options": {"locale": "en_GB"},
+      "output": "<IRELM>October sixteenth twenty twenty six</IRELM>"
+    },
+    {
+      "name": "AS inside other macros",
+      "input": "<happy>It costs <money>$12.50</money></happy>",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\">It costs twelve dollars fifty cents</VAD></IRELM>"
+    },
+    {
+      "name": "best effort: unreadable AS text is left as it is",
+      "input": "<time>soon</time>",
+      "output": "<IRELM>soon</IRELM>"
+    },
+    {
+      "name": "strict: unreadable AS text",
+      "input": "<time>soon</time>",
+      "options": {"strict": true},
+      "error": "bad_as"
+    },
+    {
+      "name": "AS is never sent in stateless mode",
+      "input": "<spell>SHE</spell> <unit>15s</unit>",
+      "options": {"stateless": true},
+      "output": "<IRELM>S H E fifteen seconds</IRELM>"
+    },
+    {
+      "name": "ssml mappings",
+      "input": "<pirate>arr <emphasis>matey</emphasis> <p> <ding/> <widen_eyes/></pirate>",
+      "options": {"prosody_to_ssml": true, "voice_to_ssml": true, "pause_to_ssml": true, "message_to_ssml": true, "audio_to_ssml": true},
+      "output": "<IRELM><voice name=\"cmu-bdl-hsmm\" xml:lang=\"en-US\">arr <prosody rate=\"-40%\" volume=\"+50%\" pitch=\"-25%\">matey</prosody> <break time=\"0.5s\"/> <audio src=\"ding.wav\"/> <mark name=\"eyes:widen(0.8)\"/><mark name=\"eyes:widen(None)\"/></voice></IRELM>"
+    },
+    {
+      "name": "prosody_to_ssml skips none and rounds percentages",
+      "input": "<whisper>a</whisper><excited>b</excited>",
+      "options": {"prosody_to_ssml": true},
+      "output": "<IRELM><prosody volume=\"-50%\">a</prosody><VAD a=\"5\"><prosody rate=\"+20%\" pitch=\"+10%\">b</prosody></VAD></IRELM>"
+    },
+    {
+      "name": "as_to_ssml passes AS through as say-as",
+      "input": "<time>14:30</time> <spell>SHE</spell>",
+      "options": {"as_to_ssml": true},
+      "output": "<IRELM><say-as interpret-as=\"date\">14:30</say-as> <say-as interpret-as=\"characters\">SHE</say-as></IRELM>"
+    },
+    {
+      "name": "single ssml mappings work in stateless mode",
+      "input": "<happy>a<p>b<wink/></happy>",
+      "options": {"stateless": true, "pause_to_ssml": true, "message_to_ssml": true},
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/>a<break time=\"0.5s\"/>b<mark name=\"eyes:wink(right)\"/><break time=\"0.2s\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+    },
+    {
+      "name": "span ssml mappings cannot be stateless",
+      "input": "x",
+      "options": {"stateless": true, "prosody_to_ssml": true},
+      "error": "bad_option"
+    },
+    {
+      "name": "inline table with long param names",
+      "table_yaml": "calm: <VAD valence=\"3.5\" arousal=\"2\">\nslow: <PROSODY speed=\"0.8\" pitch=\"none\">\n",
+      "input": "<calm><slow>easy</slow></calm>",
+      "output": "<IRELM><VAD v=\"3.5\" a=\"2\"><PROSODY s=\"0.8\" p=\"none\">easy</PROSODY></VAD></IRELM>"
+    },
+    {
+      "name": "attribute values are escaped on output",
+      "table_yaml": "say: <MESSAGE sub=\"log\" action='print(\"a &amp; b\")'/>\n",
+      "input": "<say/>",
+      "output": "<IRELM><MESSAGE sub=\"log\" action=\"print(&quot;a &amp; b&quot;)\"/></IRELM>"
+    }
+  ]
+}

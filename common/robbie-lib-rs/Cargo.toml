@@ -1,0 +1,187 @@
+[package]
+name = "robbie-lib"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["duckman"]
+publish = false
+
+[lib]
+name = "robbie_lib"
+path = "lib.rs"
+
+[[bin]]
+name = "relm"
+path = "bin/relm.rs"
+required-features = ["cli"]
+
+[features]
+default = ["cli"]
+cli = ["dep:clap", "dep:axum", "dep:tokio"]     # the relm binary; services using the lib can turn it off
+
+# The live list. Deliberately short: a new crate is a decision, not a convenience.
+[dependencies]
+anyhow          = "1"
+thiserror       = "2"
+log             = "0.4"          # facade only; the binary picks the sink
+serde           = { version = "1", features = ["derive"] }
+serde_json      = "1"
+itertools       = "0.15"
+strum           = "0.28"         # enum iteration, Display
+strum_macros    = "0.28"
+regex           = "1.13"
+serde_yaml_ng   = "0.10"         # the RELM to IRELM table
+clap            = { version = "4.6", features = ["derive"], optional = true }
+axum            = { version = "0.8", optional = true }      # relm --serve
+tokio           = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
+
+[profile.dev]
+opt-level = 0
+debug = true
+strip = "none"
+
+[profile.release]
+opt-level = 3
+debug = false
+strip = "debuginfo"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The vetted crate menu.
+#
+# Crates already in use and understood. When a job needs one, take it from here rather than
+# going shopping: it is a known quantity, and the versions match across projects so a shared
+# crate never drags two copies of anything into one tree.
+# Uncomment what the project actually needs. Marked (native) where it will not build for wasm32.
+# Something genuinely new is still a decision requiring approval, per code_standard.md.
+
+# --- errors, logging, crash reporting ---
+# flexi_logger  = { version = "0.31", features = ["colors"] }   # the log sink: colours, RUST_LOG, file rotation
+# color-eyre    = "0.6"            # readable panic and error reports in a binary
+# backtrace     = "0.3"            # capture a backtrace deliberately, for a crash report
+# sentry        = "0.49"           # ship crash reports to a hosted service (native)
+
+# --- CLI ---
+# (in use) clap          = { version = "4.6", features = ["derive"] }    # arg parsing; last flag wins, so defaults override
+
+# --- collections, hashing, caching ---
+# hashbrown     = { version = "0.17", features = ["serde"] }    # the std HashMap impl, direct, so you pick the hasher
+# ahash         = { version = "0.8", default-features = false, features = ["compile-time-rng"] }  # fast hasher
+# xxhash-rust   = { version = "0.8", features = ["xxh3", "const_xxh3"] }    # fast content hashing, usable in const
+# crc32fast     = "1.5"            # checksums in file formats
+# indexmap      = { version = "2", features = ["serde"] }       # map with stable insertion order
+# lru           = "0.18"           # LRU cache
+# cached        = "4.0"           # memoise a fn with an attribute
+# fastbloom     = { version = "0.17", features = ["serde"] }    # bloom filter
+# once_cell     = "1.21"           # lazy statics
+# bytemuck      = { version = "1", features = ["derive"] }      # zero-copy casts between Pod types and bytes
+# order-stat    = "0.1"            # nth-element / median without a full sort
+
+# --- serialisation formats ---
+# serde_with    = "3"              # field-level ser/de adapters, for awkward external formats
+# serde_cbor    = "0.11"           # CBOR
+# serde_bytes   = "0.11"           # efficient byte-slice ser/de
+# postcard      = { version = "1.1", features = ["use-std"] }   # compact binary wire format
+# (in use) serde_yaml_ng = "0.10"           # YAML, the maintained fork
+# toml          = "1.1"            # TOML
+# ron           = "0.12"           # rusty object notation, good for hand-edited config
+# quick-xml     = { version = "0.42", features = ["serialize"] }    # XML and SVG
+
+# --- compression ---
+# brotli        = "9.0"            # brotli
+# lz4_flex      = "0.14"           # lz4, frame-based, no C deps
+# snap          = "1.1"            # snappy
+# flate2        = "1.1"            # gzip
+# smaz          = "0.1"            # short-string compression, where general codecs lose
+# zstd          = "0.14"           # zstd (native; the C++ build fights wasm)
+# bzip2         = "0.6"            # bzip2 (native)
+
+# --- embedded databases ---
+# heed          = "0.22"           # LMDB. One read txn per thread per env: nesting get() inside iter() panics (native)
+# redb          = "4.4"            # pure-Rust embedded kv store, no C deps (native)
+
+# --- numbers, time, maths ---
+# num-traits    = "0.2"            # generic numeric bounds
+# num-format    = "0.4"            # thousands separators for human-facing numbers
+# num_cpus      = "1.17"           # physical vs logical core counts
+# human-units   = "0.6"            # human readable byte and duration formatting
+# time          = { version = "0.3", features = ["parsing", "macros", "formatting", "serde"] }   # the house time crate
+# chrono        = "0.4"            # only where an API demands it; prefer time
+# nalgebra      = "0.35"           # linear algebra, transforms
+
+# --- text, unicode, search ---
+# (in use) regex         = "1.13"
+# strsim        = "0.11"           # edit distance: Levenshtein, Jaro-Winkler
+# nucleo        = "0.5"            # fuzzy matcher, the one behind the word finders
+# rust-stemmers = "1.2"            # Porter stemming. A bump invalidates anything keyed on stems
+# fst           = "0.4"            # finite state transducer, for large static key sets
+# syllable      = "0.1"            # syllable counts for readability scores
+# unic-langid   = { version = "0.9", features = ["serde", "macros"] }    # BCP-47 language ids
+# unicode-normalization = "0.1"    # NFC/NFD, before comparing user text
+# urlencoding   = "2.1"            # percent encoding
+
+# --- random and ids ---
+# wyrand        = "0.5"            # fast seedable PRNG, the house default
+# uuid          = { version = "1.28", features = ["v7", "serde", "js"] }   # v7 sorts by time; v5 for deterministic ids
+# getrandom     = { version = "0.4", features = ["wasm_js"] }   # entropy, wasm included
+
+# --- concurrency ---
+# flume         = "0.12"           # mpmc channel, works without an async runtime
+# rayon         = "1.12"           # data-parallel iterators (native, needs std::thread)
+# (in use) tokio         = { version = "1", features = ["rt-multi-thread", "macros", "sync"] }   # async runtime (native)
+
+# --- files and paths ---
+# walkdir       = "2.5"            # recursive directory walk (native)
+# dirs-next     = "2.0"            # per-OS config / data / cache dirs (native)
+# open          = "5.4"            # open a path or url in the desktop handler (native)
+
+# --- web services ---
+# (in use) axum          = "0.8"            # http server, on tokio (native)
+# tower-http    = { version = "0.7", features = ["cors"] }      # middleware: CORS, tracing, static files (native)
+
+# --- wasm ---
+# wasm-bindgen  = "0.2"            # js interop; pin to match the installed wasm-bindgen-cli
+# js-sys        = "0.3"            # js builtins
+# web-sys       = { version = "0.3", features = ["console"] }   # browser APIs, feature per API
+# console_error_panic_hook = "0.1" # panics land in the browser console instead of vanishing
+
+# --- images and vector graphics ---
+# image         = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
+# imageproc     = "0.27"           # filters, drawing, geometry on top of image
+# fast_image_resize = "6.1"        # SIMD resampling, far faster than image's own
+# png           = "0.18"           # direct png encode/decode, including 16-bit
+# resvg         = "0.48"           # SVG rasteriser, pure Rust
+# tiny-skia     = "0.12"           # 2D rasteriser, the backend resvg draws into
+
+# --- templating ---
+# askama        = "0.16"           # jinja-like, compile-time checked, wasm safe
+# tera          = "2.4"           # jinja-like, runtime templates
+
+# --- untrusted input ---
+# ammonia       = "4.2"            # html sanitiser
+# unicode-security = "0.1"         # confusable and mixed-script detection
+# strip-ansi-escapes = "0.2"       # strip terminal control sequences before logging
+
+# --- odd jobs ---
+# derivative    = "2.2"            # derive Debug while skipping fields, for native handles
+# sysinfo       = "0.39"           # process and system memory figures
+# base64        = "0.23"           # base64, including data: URIs
+# qrcodegen     = "1.8"            # QR codes
+# lofty         = "0.25"           # audio file metadata
+
+# [dev-dependencies]
+# rand          = "0.10"            # test data; not wasm safe, which is fine for tests
+# tempfile      = "3.27"           # scratch files and dirs that clean themselves up
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Once this grows past one crate, delete the [package] and [dependencies] above and make the
+# root a virtual workspace instead:
+#
+# [workspace]
+# members = [
+#     "__PROJECT___lib",       # core logic, no GUI deps, wasm safe. Keep it that way.
+#     "__PROJECT___app",       # the binary
+# ]
+# resolver = "3"
+#
+# A crate that must compile to wasm never gains a GUI or native-only dependency; that
+# constraint is only cheap while it is still true, so CI checks it.

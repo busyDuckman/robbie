@@ -22,16 +22,16 @@ This is RELM, what the llm outputs:
 
     <happy> She asked me to buy <widen_eyes><emphasis>roses</emphasis></widen_eyes></happy>
 
-This is the RELM to Intermediate RELM (IRELM) table.
+This is the RELM to Intermediate RELM (IRELM) table. The table is YAML (Robbie's is config/relm_table.yaml).
 
-        # Macro,   IRELM
-        p           = <PAUSE duration="0.5"/>           # paragraph pause
-        pleasant    = <VAD v="4" a="3" d="3">
-        happy       = <VAD v="4" a="4" d="3">
-        ecstatic    = <VAD a="5" d="5">
-        emphasis    = <PROSODY s="0.6" v="1.5" p="0.75">
-        widen_eyes  = <MESSAGE sub="eyes" action="widen(0.8)"/>
-        /widen_eyes  = <MESSAGE sub="eyes" action="widen(None)"/>
+        # Macro: IRELM
+        p: '<PAUSE duration="0.5"/>'           # paragraph pause
+        pleasant: '<VAD v="4" a="3" d="3">'
+        happy: '<VAD v="4" a="4" d="3">'
+        ecstatic: '<VAD a="5" d="5">'
+        emphasis: '<PROSODY s="0.6" v="1.5" p="0.75">'
+        widen_eyes: '<MESSAGE sub="eyes" action="widen(0.8)"/>'
+        /widen_eyes: '<MESSAGE sub="eyes" action="widen(None)"/>'
 
 
 so the RELM message (llm side)
@@ -134,7 +134,7 @@ Note: things like "/emphasis" don't need to be defined because the stack will ta
 **PAUSE** is the tool to sync anim ends, there are no end marks.
 
         # winks then continues talking
-        wink  = <MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>
+        wink: '<MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>'
 
 So the wink message is sent and the delay must be calibrated to the system.
 

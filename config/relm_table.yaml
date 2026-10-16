@@ -1,0 +1,96 @@
+# RELM to IRELM macro table for Robbie (see docs/relm.md).
+#
+# Each key is a RELM tag the LLM may use, each value is the IRELM it expands to.
+# Span macros expand to an opening tag, the stack closes them, so "/name" is
+# only defined where a close needs an explicit action (MESSAGE).
+#
+# VAD is 1 to 5, 3 is neutral. A missing param means "none" (blend with mood).
+# PROSODY values are multipliers of the current voice settings.
+#
+# MESSAGE subs and actions may name things the robot does not implement yet.
+#
+# Note: No mixed macros were used (combines a span with an explicit close), because 
+# the spec is not yet clear if that is supported.
+
+
+# --- pauses ---
+p: '<PAUSE duration="0.5"/>'                  # paragraph pause
+beat: '<PAUSE duration="0.25"/>'              # short comic beat
+dramatic_pause: '<PAUSE duration="1.2"/>'
+
+# --- mood / emotion (VAD) ---
+neutral: '<VAD v="3" a="3" d="3">'
+pleasant: '<VAD v="4" a="3" d="3">'
+happy: '<VAD v="4" a="4" d="3">'
+ecstatic: '<VAD a="5" d="5">'
+excited: '<VAD v="5" a="5" d="3">'
+proud: '<VAD v="5" a="3" d="5">'
+smug: '<VAD v="4" a="2" d="5">'
+calm: '<VAD v="4" a="1" d="3">'
+bored: '<VAD v="2" a="1" d="3">'
+sleepy: '<VAD a="1" d="2">'
+sad: '<VAD v="2" a="2" d="2">'
+miserable: '<VAD v="1" a="2" d="1">'
+annoyed: '<VAD v="2" a="3" d="4">'
+angry: '<VAD v="1" a="4" d="4">'
+furious: '<VAD v="1" a="5" d="5">'
+disgusted: '<VAD v="1" a="3" d="4">'
+scared: '<VAD v="1" a="5" d="1">'
+nervous: '<VAD v="2" a="4" d="2">'
+embarrassed: '<VAD v="2" a="3" d="1">'
+surprised: '<VAD a="5">'
+curious: '<VAD v="4" a="4" d="3">'
+confused: '<VAD v="2" a="3" d="2">'
+affectionate: '<VAD v="5" a="2" d="3">'
+
+# --- delivery (PROSODY) ---
+emphasis: '<PROSODY s="0.6" v="1.5" p="0.75">'
+whisper: '<PROSODY v="0.4" s="0.9" r="0.6">'
+shout: '<PROSODY v="1.6" p="1.2" r="1.3">'
+fast: '<PROSODY s="1.3">'
+slow: '<PROSODY s="0.7">'
+deadpan: '<PROSODY r="0.3" s="0.9">'
+sarcastic: '<PROSODY r="1.5" s="0.85" p="1.1">'
+sing_song: '<PROSODY r="1.8" p="1.15">'
+mumble: '<PROSODY v="0.6" s="1.2" r="0.5">'
+
+# --- eyes (MESSAGE) ---
+widen_eyes: '<MESSAGE sub="eyes" action="widen(0.8)"/>'
+/widen_eyes: '<MESSAGE sub="eyes" action="widen(None)"/>'
+narrow_eyes: '<MESSAGE sub="eyes" action="narrow(0.6)"/>'
+/narrow_eyes: '<MESSAGE sub="eyes" action="narrow(None)"/>'
+look_away: '<MESSAGE sub="eyes" action="look_away()"/>'
+/look_away: '<MESSAGE sub="eyes" action="look_back()"/>'
+wink: '<MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>'
+blink: '<MESSAGE sub="eyes" action="blink()"/><PAUSE duration="0.15"/>'
+roll_eyes: '<MESSAGE sub="eyes" action="roll()"/><PAUSE duration="0.6"/>'
+
+# --- head (MESSAGE) ---
+nod: '<MESSAGE sub="head" action="nod()"/>'
+shake_head: '<MESSAGE sub="head" action="shake()"/>'
+tilt_head: '<MESSAGE sub="head" action="tilt(0.5)"/>'
+/tilt_head: '<MESSAGE sub="head" action="tilt(None)"/>'
+
+# --- robot sounds (BEEP) ---
+beep: '<BEEP melody="A5,0.12"/>'
+chirp: '<BEEP melody="C5,0.06; E5,0.06; G5,0.1"/>'
+question_beep: '<BEEP melody="E5,0.08; R,0.03; A5,0.14"/>'
+sad_beep: '<BEEP melody="G4,0.15; E4,0.15; C4,0.3"/>'
+error_beep: '<BEEP melody="C3,0.2; R,0.05; C3,0.3"/>'
+alarm: '<BEEP melody="A5,0.1; E5,0.1; A5,0.1; E5,0.1"/>'
+fanfare: '<BEEP melody="C5,0.1; E5,0.1; G5,0.1; C6,0.3"/>'
+
+# --- borrowed voices (VOICE), MaryTTS voices from config/robbie_services/voice.yaml ---
+american: '<VOICE voice="cmu-rms-hsmm" locale="en_US">'
+posh: '<VOICE voice="dfki-prudence-hsmm" locale="en_GB">'
+german: '<VOICE voice="bits3-hsmm" locale="de">'
+french: '<VOICE voice="enst-camille-hsmm" locale="fr">'
+
+# --- reading things out (AS) ---
+time: '<AS format="datetime">'
+date: '<AS format="datetime">'
+number: '<AS format="number">'
+digits: '<AS format="digits">'
+spell: '<AS format="characters">'
+unit: '<AS format="unit">'
+money: '<AS format="currency">'
