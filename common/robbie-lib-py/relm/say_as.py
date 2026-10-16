@@ -179,7 +179,11 @@ def _time(text: str):
     words = _under_100(h)
     if mins:
         words += ["oh", ONES[mins]] if mins < 10 else _under_100(mins)
-    return words + (["p", "m"] if pm else ["a", "m"])
+    words += ["p", "m"] if pm else ["a", "m"]
+    secs = int(m.group(3)) if m.group(3) else 0
+    if secs:
+        words += ["and"] + _under_100(secs) + ["second" if secs == 1 else "seconds"]
+    return words
 
 
 def _date(text: str, us: bool, gb: bool):

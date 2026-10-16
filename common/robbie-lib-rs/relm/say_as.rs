@@ -287,10 +287,11 @@ fn time(text: &str) -> Option<Words> {
     let m = RE_TIME.captures(text)?;
     let mut h: u64 = m[1].parse().ok()?;
     let mins: u64 = m[2].parse().ok()?;
-    if mins > 59
-        || m.get(3)
-            .is_some_and(|s| s.as_str().parse::<u64>().unwrap_or(99) > 59)
-    {
+    let secs: u64 = match m.get(3) {
+        Some(s) => s.as_str().parse().ok()?,
+        None => 0,
+    };
+    if mins > 59 || secs > 59 {
         return None;
     }
     let pm = if let Some(ampm) = m.get(4) {
@@ -315,6 +316,11 @@ fn time(text: &str) -> Option<Words> {
         }
     }
     w.extend(words(if pm { &["p", "m"] } else { &["a", "m"] }));
+    if secs != 0 {
+        w.push("and".into());
+        w.extend(under_100(secs));
+        w.push(if secs == 1 { "second" } else { "seconds" }.into());
+    }
     Some(w)
 }
 
