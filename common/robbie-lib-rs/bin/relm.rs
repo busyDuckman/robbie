@@ -29,24 +29,6 @@ struct Args {
     /// serve POST / on 127.0.0.1:PORT
     #[arg(long, value_name = "PORT")]
     serve: Option<u16>,
-    #[arg(long = "prosody_to_ssml")]
-    prosody_to_ssml: bool,
-    #[arg(long = "voice_to_ssml")]
-    voice_to_ssml: bool,
-    #[arg(long = "pause_to_ssml")]
-    pause_to_ssml: bool,
-    #[arg(long = "message_to_ssml")]
-    message_to_ssml: bool,
-    #[arg(long = "audio_to_ssml")]
-    audio_to_ssml: bool,
-    #[arg(long = "as_to_ssml")]
-    as_to_ssml: bool,
-    #[arg(long = "vad_to_emotionml")]
-    vad_to_emotionml: bool,
-    #[arg(long = "vad_to_ssml")]
-    vad_to_ssml: bool,
-    #[arg(long = "beep_to_ssml")]
-    beep_to_ssml: bool,
 }
 
 fn fail(message: impl std::fmt::Display) -> ! {
@@ -87,15 +69,6 @@ fn serve(converter: Converter, port: u16) {
 
 fn main() {
     let args = Args::parse();
-    for (flag, on) in [
-        ("vad_to_emotionml", args.vad_to_emotionml),
-        ("vad_to_ssml", args.vad_to_ssml),
-        ("beep_to_ssml", args.beep_to_ssml),
-    ] {
-        if on {
-            fail(format!("--{flag} is not implemented yet"));
-        }
-    }
     let locale = args
         .locale
         .or_else(|| std::env::var("LOCALE").ok().filter(|l| !l.is_empty()))
@@ -104,15 +77,9 @@ fn main() {
         stateless: args.stateless,
         strict: args.strict,
         locale,
-        prosody_to_ssml: args.prosody_to_ssml,
-        voice_to_ssml: args.voice_to_ssml,
-        pause_to_ssml: args.pause_to_ssml,
-        message_to_ssml: args.message_to_ssml,
-        audio_to_ssml: args.audio_to_ssml,
-        as_to_ssml: args.as_to_ssml,
     };
     let table = Table::load(&args.table).unwrap_or_else(|e| fail(e));
-    let converter = Converter::new(table, options).unwrap_or_else(|e| fail(e));
+    let converter = Converter::new(table, options);
 
     if let Some(port) = args.serve {
         serve(converter, port);

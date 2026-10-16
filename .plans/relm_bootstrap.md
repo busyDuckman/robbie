@@ -24,8 +24,21 @@ Pipeline:
      Options: keep it mixed, or have the flags produce a full SSML <speak> document (then VAD,
      MESSAGE etc. need a home, e.g. <mark>). This also decides what the docs/relm.md pipeline
      line should say.
+
+    I have the wrong shape
+
+    lets do 
+    
+     relm export --format=SSML --selected_tokens=
+     relm export --format=MARYXML --selected_tokens=
+     relm export --format=EMOTIONML --selected_tokens=
+    
+
   2. VAD to prosody numbers for --vad_to_ssml (e.g. arousal drives rate and pitch, valence drives
      pitch range, dominance drives volume). Needs your call on the mapping and its strength.
+
+    use a config
+
   3. VAD to EmotionML for --vad_to_emotionml. Proposal: the pad-dimensions vocabulary
      (pleasure, arousal, dominance), with 1-5 scaled to 0-1 as (x - 1) / 4.
   4. Where the Robbie listener lives: inside the voice service, or as its own container next to it.

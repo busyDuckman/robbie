@@ -10,7 +10,7 @@ _ENTITIES = {"amp": "&", "lt": "<", "gt": ">", "quot": '"', "apos": "'"}
 
 
 class RelmError(Exception):
-    """kind is one of: bad_table, bad_option, bad_tag, unknown_tag, unexpected_close,
+    """kind is one of: bad_table, bad_tag, unknown_tag, unexpected_close,
     mismatched_close, unclosed_tag, bad_as."""
 
     def __init__(self, kind: str, message: str):

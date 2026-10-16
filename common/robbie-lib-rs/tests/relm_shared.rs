@@ -76,8 +76,7 @@ fn convert_cases() {
                 }
             }
             .expect("table loads");
-            let got =
-                Converter::new(table, c.options.clone()).and_then(|conv| conv.convert(&c.input));
+            let got = Converter::new(table, c.options.clone()).convert(&c.input);
             check(&c.name, got, &c.output, &c.error)
         })
         .collect();

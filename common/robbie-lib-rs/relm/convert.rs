@@ -15,12 +15,6 @@ pub struct Options {
     pub stateless: bool,
     pub strict: bool,
     pub locale: String,
-    pub prosody_to_ssml: bool,
-    pub voice_to_ssml: bool,
-    pub pause_to_ssml: bool,
-    pub message_to_ssml: bool,
-    pub audio_to_ssml: bool,
-    pub as_to_ssml: bool,
 }
 
 impl Default for Options {
@@ -29,54 +23,7 @@ impl Default for Options {
             stateless: false,
             strict: false,
             locale: "en_GB".into(),
-            prosody_to_ssml: false,
-            voice_to_ssml: false,
-            pause_to_ssml: false,
-            message_to_ssml: false,
-            audio_to_ssml: false,
-            as_to_ssml: false,
         }
-    }
-}
-
-impl Options {
-    pub fn check(&self) -> Result<(), RelmError> {
-        let spans = [
-            ("prosody_to_ssml", self.prosody_to_ssml),
-            ("voice_to_ssml", self.voice_to_ssml),
-            ("as_to_ssml", self.as_to_ssml),
-        ];
-        if let Some((flag, _)) = spans.iter().find(|(_, on)| *on).filter(|_| self.stateless) {
-            return Err(RelmError::new(
-                ErrorKind::BadOption,
-                format!("--stateless cannot be used with --{flag}, SSML spans must nest"),
-            ));
-        }
-        Ok(())
-    }
-}
-
-fn percent(multiplier: &str) -> String {
-    let x = (multiplier.parse::<f64>().unwrap_or(1.0) - 1.0) * 100.0;
-    let n = (x.abs() + 0.5).floor() as i64;
-    format!("{}{n}%", if x < 0.0 && n != 0 { "-" } else { "+" })
-}
-
-fn attrs(items: &[(&str, String)]) -> Vec<(String, String)> {
-    items
-        .iter()
-        .map(|(k, v)| (k.to_string(), v.clone()))
-        .collect()
-}
-
-fn ssml_say_as(format: &str) -> &'static str {
-    match format {
-        "datetime" => "date",
-        "number" => "cardinal",
-        "digits" => "digits",
-        "characters" => "characters",
-        "unit" => "unit",
-        _ => "currency",
     }
 }
 
@@ -86,9 +33,8 @@ pub struct Converter {
 }
 
 impl Converter {
-    pub fn new(table: Table, options: Options) -> Result<Self, RelmError> {
-        options.check()?;
-        Ok(Self { table, options })
+    pub fn new(table: Table, options: Options) -> Self {
+        Self { table, options }
     }
 
     pub fn table(&self) -> &Table {
@@ -108,7 +54,6 @@ impl Converter {
 }
 
 pub fn convert(table: &Table, relm: &str, options: &Options) -> Result<String, RelmError> {
-    options.check()?;
     Run {
         table,
         opt: options,
@@ -157,15 +102,12 @@ impl<'a> Run<'a> {
     // --- RELM events
 
     fn text(&mut self, text: &str) -> Result<(), RelmError> {
-        let as_cmd = if self.opt.as_to_ssml {
-            None
-        } else {
-            self.stack
-                .iter()
-                .rev()
-                .flat_map(|m| m.spans().rev())
-                .find(|c| c.name == "AS")
-        };
+        let as_cmd = self
+            .stack
+            .iter()
+            .rev()
+            .flat_map(|m| m.spans().rev())
+            .find(|c| c.name == "AS");
         let body = strip_ws(text);
         if let (Some(cmd), false) = (as_cmd, body.is_empty()) {
             let locale = cmd.get("locale").unwrap_or(&self.opt.locale);
@@ -286,71 +228,18 @@ impl<'a> Run<'a> {
     }
 
     fn emit_open(&mut self, cmd: &Command) {
-        let o = self.opt;
-        let get = |k: &str| cmd.get(k).unwrap_or("").to_string();
         let xml = match cmd.name.as_str() {
-            "AS" if o.as_to_ssml => tag_xml(
-                "say-as",
-                &attrs(&[("interpret-as", ssml_say_as(&get("format")).into())]),
-                false,
-            ),
-            "AS" => return,
-            _ if cmd.is_span() && o.stateless => self.state(&cmd.name),
-            "PROSODY" if o.prosody_to_ssml => {
-                let items: Vec<(String, String)> = cmd
-                    .attrs
-                    .iter()
-                    .filter(|(_, v)| v != "none")
-                    .map(|(k, v)| {
-                        let name = match k.as_str() {
-                            "p" => "pitch",
-                            "s" => "rate",
-                            "r" => "range",
-                            _ => "volume",
-                        };
-                        (name.to_string(), percent(v))
-                    })
-                    .collect();
-                tag_xml("prosody", &items, false)
-            }
-            "VOICE" if o.voice_to_ssml => {
-                let items: Vec<(String, String)> = cmd
-                    .attrs
-                    .iter()
-                    .filter(|(_, v)| v != "none")
-                    .map(|(k, v)| match k.as_str() {
-                        "locale" => ("xml:lang".to_string(), v.replace('_', "-")),
-                        _ => ("name".to_string(), v.clone()),
-                    })
-                    .collect();
-                tag_xml("voice", &items, false)
-            }
-            "PAUSE" if o.pause_to_ssml => tag_xml(
-                "break",
-                &attrs(&[("time", format!("{}s", get("duration")))]),
-                true,
-            ),
-            "MESSAGE" if o.message_to_ssml => tag_xml(
-                "mark",
-                &attrs(&[("name", format!("{}:{}", get("sub"), get("action")))]),
-                true,
-            ),
-            "AUDIO" if o.audio_to_ssml => {
-                tag_xml("audio", &attrs(&[("src", get("file_name"))]), true)
-            }
+            "AS" => return, // expanded here, never sent
+            _ if cmd.is_span() && self.opt.stateless => self.state(&cmd.name),
             _ => cmd.xml(!cmd.is_span()),
         };
         self.out.push_str(&xml);
     }
 
     fn emit_close(&mut self, cmd: &Command) {
-        let o = self.opt;
         let xml = match cmd.name.as_str() {
-            "AS" if o.as_to_ssml => "</say-as>".to_string(),
             "AS" => return,
-            _ if o.stateless => self.state(&cmd.name),
-            "PROSODY" if o.prosody_to_ssml => "</prosody>".to_string(),
-            "VOICE" if o.voice_to_ssml => "</voice>".to_string(),
+            _ if self.opt.stateless => self.state(&cmd.name),
             name => format!("</{name}>"),
         };
         self.out.push_str(&xml);

@@ -11,7 +11,6 @@ pub const WS: [char; 4] = [' ', '\t', '\n', '\r'];
 #[strum(serialize_all = "snake_case")]
 pub enum ErrorKind {
     BadTable,
-    BadOption,
     BadTag,
     UnknownTag,
     UnexpectedClose,

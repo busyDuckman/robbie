@@ -41,27 +41,26 @@ so the RELM message (llm side)
 expands to (llm side)
 
         <IRELM>
-        <VAD v="4" a="4" d="3"> She asked me to buy <MESSAGE sub="eyes" action="widen(0.8)"/>
-        <PROSODY s="0.6" v="1.5" p="0.75">roses</PROSODY><MESSAGE sub="eyes" action="widen(None)"/></VAD>
+        <VAD v="4" a="4" d="3"> She asked me to buy <MESSAGE sub="eyes" action="widen(0.8)" id="123456"/>
+        <PROSODY s="0.6" v="1.5" p="0.75">roses</PROSODY><MESSAGE sub="eyes" action="widen(None)" id="123456" close="true"/></VAD>
         </IRELM>
 
 
 Alternative --stateless
-        <IRELM>
+        
         <VAD v="4" a="4" d="3"/>
         She asked me to buy 
-        <MESSAGE sub="eyes" action="widen(0.8)"/>
+        <MESSAGE sub="eyes" action="widen(0.8)" id="123456"/>
         <PROSODY s="0.6" v="1.5" p="0.75"/>
         roses
         <PROSODY p="none" s="none" r="none" v="none"/>
-        <MESSAGE sub="eyes" action="widen(None)"/>
+        <MESSAGE sub="eyes" action="widen(None)" id="123456" close="true"/>
         <VAD v="none" a="none" d="none"/>
-        </IRELM>
 
 
 # IRELM spec
 
-IRELM is XML. A message is wrapped in <IRELM> ... </IRELM>, params are attributes, and text is escaped as XML (e.g. &amp; and &lt;).
+IRELM is XML. A message is wrapped in <IRELM> ... </IRELM> (unless stateless), params are attributes, and text is escaped as XML (e.g. &amp; and &lt;).
 Commands that are not spans (MESSAGE, BEEP, AUDIO, PAUSE) are self-closing tags, e.g. <PAUSE duration="0.5"/>.
 
 VAD and PROSODY params are optional. A missing param means "none".
@@ -87,6 +86,9 @@ VAD and PROSODY params are optional. A missing param means "none".
     - sub and action are arbitrary strings. Whatever your robot cares to dispatch.
       "sub" could be read as "subject", or "subscriber"
     - does not block speech
+    - a macro with a close (e.g. widen_eyes and /widen_eyes) gives its messages an id. The close
+      message carries the same id and close="true". This lets a listener keep a list of started
+      messages awaiting a close.
 
   - BEEP (melody)
     - param is a melody: a semicolon separated list of "NOTE,DURATION", e.g. "C4,0.1; E4,0.1; G4,0.1; C5,0.1"
@@ -173,29 +175,100 @@ Generates IRELM
             --locale            locale for AS
             --serve <port>      RESTful API endpoint
 
-            --vad_to_emotionml     maps VAD to EmotionML, for systems that are happy with that directly.
-            --vad_to_ssml          approximates VAD with ssml <prosody> (can't use with --vad_to_emotionml)
 
-            --prosody_to_ssml      maps PROSODY to ssml <prosody>
-            --voice_to_ssml        maps VOICE to ssml <voice> and xml:lang
-            --pause_to_ssml        maps PAUSE to ssml <break>
-            --message_to_ssml      maps MESSAGE to ssml <mark>
-            --audio_to_ssml        maps AUDIO to ssml <audio>
-            --beep_to_ssml         maps BEEP to ssml <audio>, by rendering the melody to a temporary wav file
-            
-            --as_to_ssml           disable internal AS, pass via ssml <say-as>
+#  listener_lib.rs  (lib)
+#  listener.rs          (cli)
 
-When --vad_to_ssml and --prosody_to_ssml are both used, relm.py resolves VAD and PROSODY to the effective prosody.
+Consumes IRELM, co-ordinates TTS, plays resulting audio.
+
+The library of common operations if you want to make your own listener, otherwise the CLI should be fine.
 
 
-# listener_lib.py / listener_lib.rs  (lib)
-# listener.py / listener.rs          (cli)
-
-Consumes IRELM
-
-Library of common operations to help make a listener (and cli that may work for many cases)
+The CLI chunks the IRELM, gets wavs from tts services, schedules audio playback (using kira) and actions.
 
     CLI options
-        
+       --no-marks         # don't use marks 
+       --device           # playback device (auto detect otherwise) can be a file.
+
+       --tts-engine=<?>   # one of marytts|debug|TODO
+       --tts-url
+
+       --audio-dir=<?>    # audio files live here
+
+       --beep-post=<?>    # post-processing for beep audio.
+       --play-post=<?>    # post-processing for audio files. 
+       --tts-post=<?>     # post-processing on the tts (done by the listener on the returned wave form)
+
+       --interactive      # IRELM on stdin
+       --serve <port>     # API (see doco).
+
+       --allow-message-interrupt   # on interrupt, do not send the closes of started messages
+
+       --message-url=<?>      # where messages go, the scheme picks the protocol (see message targets)
+       --message-early=<?>    # if possible, messages are sent this many ms early to compensate for latency.
+
+The CLI will always handle MESSAGE BEEP AUDIO internally
+PAUSE VOICE PROSODY VAD  may or may not work with the tts engine specified.
+
+IMPLEMENTATION NOTE: marytts will use MaryXML as the transport format.
+
+# configuration
+
+There is a listener.yaml to config the software.
+
+It has :
+  - VAD to prosody mapping   (many services wont support VAD type things directly or well)
+  - the starting mood, until one is set by the API
 
 
+# Audio post options
+
+Each post option is an ffmpeg -af filter string, passed through as-is, e.g. --tts-post "aecho=0.8:0.9:40:0.3".
+No temporary file is needed, the wav is piped through ffmpeg:
+
+    ffmpeg -f wav -i pipe:0 -af "<filter>" -f wav pipe:1
+
+Leave an option out for no post-processing. Post-processing needs ffmpeg on the PATH.
+
+# API
+API is the best way to do this. -- interactive is more for testing (where device is a file).
+
+API allows:
+  - interruption.
+  - mood setting (what the VAD returns to)
+
+The API is HTTP on the --serve port.
+
+    POST /say          body is IRELM. It is queued behind anything already playing.
+                       Replies 202 once the IRELM is parsed, 400 if it is not valid IRELM.
+    POST /interrupt    stops the current audio and clears the queue. Messages not yet sent are dropped,
+                       except the closes of started messages (matched by id, e.g. widen(None)), which
+                       are sent at once so the robot is not left mid expression.
+                       --allow-message-interrupt drops those too.
+    PUT  /mood         body is VAD, e.g. <VAD v="3" a="3" d="3"/>. "none" params fall back to this.
+    GET  /mood         the current mood, as VAD.
+    GET  /status       JSON, e.g. {"state": "speaking", "queued": 2}. state is speaking or idle.
+    GET  /health       "ok".
+
+# Message targets
+
+--message-url says where MESSAGE goes. The scheme picks the protocol:
+
+    stdout:                      one "sub, action" line per message (split on the first comma). For tests and piping.
+    tcp://host:2000              the same lines over a TCP socket. Watch it with nc host 2000.
+    mqtt://broker:1883/relm      MQTT, one topic per sub under the given topic, e.g. relm/eyes.
+    ros:                         ROS 2, see below.
+
+Robbie's own messaging layer (Zenoh or NATS, see build_plan.md) can be added as a scheme once it is chosen.
+Each protocol needs a client crate, so they are added as needed.
+
+# ROS
+Sends a custom message as per:
+
+    # RelmMessage.msg
+
+    std_msgs/Header header   # stamp = when it should happen
+    string sub
+    string action
+
+Expects one topic per "sub" (see IRELM) eg sub (/relm/eyes, /relm/head).

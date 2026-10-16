@@ -8,10 +8,6 @@ from .convert import Converter, Options
 from .markup import RelmError
 from .table import Table
 
-_SSML_FLAGS = ("prosody_to_ssml", "voice_to_ssml", "pause_to_ssml", "message_to_ssml",
-               "audio_to_ssml", "as_to_ssml")
-_NOT_YET = ("vad_to_emotionml", "vad_to_ssml", "beep_to_ssml")
-
 
 def _args(argv):
     p = argparse.ArgumentParser(prog="relm", description="Convert RELM (LLM output) to IRELM.")
@@ -21,8 +17,6 @@ def _args(argv):
     p.add_argument("--interactive", action="store_true", help="one RELM message per stdin line")
     p.add_argument("--locale", help="locale for AS (default: $LOCALE, then en_GB)")
     p.add_argument("--serve", type=int, metavar="PORT", help="serve POST / on 127.0.0.1:PORT")
-    for flag in _SSML_FLAGS + _NOT_YET:
-        p.add_argument("--" + flag, action="store_true")
     return p.parse_args(argv)
 
 
@@ -54,13 +48,9 @@ def _serve(converter: Converter, port: int):
 
 def main(argv=None):
     args = _args(argv)
-    for flag in _NOT_YET:
-        if getattr(args, flag):
-            sys.exit(f"relm: --{flag} is not implemented yet")
     try:
         options = Options(stateless=args.stateless, strict=args.strict,
-                          locale=args.locale or os.environ.get("LOCALE") or "en_GB",
-                          **{f: getattr(args, f) for f in _SSML_FLAGS})
+                          locale=args.locale or os.environ.get("LOCALE") or "en_GB")
         converter = Converter(Table.load(args.table), options)
         if args.serve is not None:
             _serve(converter, args.serve)

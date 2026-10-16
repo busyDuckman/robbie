@@ -1,5 +1,5 @@
 {
-  "_about": "RELM in, IRELM out. table defaults to example_table.yaml. options are the relm CLI flags (stateless, strict, locale, *_to_ssml). A case has output or error (an error kind).",
+  "_about": "RELM in, IRELM out. table defaults to example_table.yaml. options are the relm CLI flags (stateless, strict, locale). A case has output or error (an error kind).",
   "cases": [
     {
       "name": "doc example, stack",
@@ -209,36 +209,6 @@
       "input": "<spell>SHE</spell> <unit>15s</unit>",
       "options": {"stateless": true},
       "output": "<IRELM>S H E fifteen seconds</IRELM>"
-    },
-    {
-      "name": "ssml mappings",
-      "input": "<pirate>arr <emphasis>matey</emphasis> <p> <ding/> <widen_eyes/></pirate>",
-      "options": {"prosody_to_ssml": true, "voice_to_ssml": true, "pause_to_ssml": true, "message_to_ssml": true, "audio_to_ssml": true},
-      "output": "<IRELM><voice name=\"cmu-bdl-hsmm\" xml:lang=\"en-US\">arr <prosody rate=\"-40%\" volume=\"+50%\" pitch=\"-25%\">matey</prosody> <break time=\"0.5s\"/> <audio src=\"ding.wav\"/> <mark name=\"eyes:widen(0.8)\"/><mark name=\"eyes:widen(None)\"/></voice></IRELM>"
-    },
-    {
-      "name": "prosody_to_ssml skips none and rounds percentages",
-      "input": "<whisper>a</whisper><excited>b</excited>",
-      "options": {"prosody_to_ssml": true},
-      "output": "<IRELM><prosody volume=\"-50%\">a</prosody><VAD a=\"5\"><prosody rate=\"+20%\" pitch=\"+10%\">b</prosody></VAD></IRELM>"
-    },
-    {
-      "name": "as_to_ssml passes AS through as say-as",
-      "input": "<time>14:30</time> <spell>SHE</spell>",
-      "options": {"as_to_ssml": true},
-      "output": "<IRELM><say-as interpret-as=\"date\">14:30</say-as> <say-as interpret-as=\"characters\">SHE</say-as></IRELM>"
-    },
-    {
-      "name": "single ssml mappings work in stateless mode",
-      "input": "<happy>a<p>b<wink/></happy>",
-      "options": {"stateless": true, "pause_to_ssml": true, "message_to_ssml": true},
-      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/>a<break time=\"0.5s\"/>b<mark name=\"eyes:wink(right)\"/><break time=\"0.2s\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
-    },
-    {
-      "name": "span ssml mappings cannot be stateless",
-      "input": "x",
-      "options": {"stateless": true, "prosody_to_ssml": true},
-      "error": "bad_option"
     },
     {
       "name": "inline table with long param names",
