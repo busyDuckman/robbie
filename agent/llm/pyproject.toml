@@ -1,0 +1,20 @@
+[project]
+name = "robbie-llm"
+version = "0.1.0"
+description = "Layer A: Robbie's LLM, served by llama.cpp, speaking RELM."
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["robbie-lib"]
+
+[project.scripts]
+robbie-chat = "robbie_llm.chat:main"
+
+[tool.uv.sources]
+robbie-lib = { path = "../../common/robbie-lib-py", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["robbie_llm"]

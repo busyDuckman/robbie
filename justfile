@@ -95,6 +95,23 @@ say text="": _update_configs
     @ffplay -nodisp -autoexit -loglevel error .temp/say.wav
 
 
+_compose_llm := "docker compose --project-directory . --env-file config/robbie_agent/.env -f agent/llm/compose.yaml"
+
+# start the LLM server (llama.cpp in Docker, on the GPU) and wait until the model is loaded
+llm-up:
+    {{ _compose_llm }} up -d --wait
+
+# stop the LLM server
+llm-down:
+    {{ _compose_llm }} down
+
+# chat with Robbie's LLM in the terminal, replies are RELM constrained by a grammar made from the table
+chat: llm-up
+    @mkdir -p .temp
+    @uv run -q --project common/robbie-lib-py python scripts/relm_grammar.py --table config/relm_table.yaml --out .temp/relm.gbnf
+    @uv run -q --project agent/llm robbie-chat --table config/relm_table.yaml --persona prompts/robbie_persona/system.md --grammar .temp/relm.gbnf
+
+
 ## --------------------------------------------------------------------------------------------------------------------
 # utils
 

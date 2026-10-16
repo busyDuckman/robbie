@@ -1,0 +1,30 @@
+# llama.cpp server for Layer A. Started by just chat.
+# Run from the repo root with --project-directory . and --env-file config/robbie_agent/.env
+# (MODELS_DIR, LLM_MODEL), see _compose_llm in the justfile.
+name: robbie-llm
+
+services:
+  llm:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b11580
+    command: >
+      -m /models/${LLM_MODEL}
+      --host 0.0.0.0 --port 8080
+      --ctx-size 8192 --n-gpu-layers 999
+      --jinja
+    volumes:
+      - ${MODELS_DIR}:/models:ro
+    ports:
+      - "127.0.0.1:8200:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      start_period: 120s
+      retries: 24
