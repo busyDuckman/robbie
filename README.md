@@ -82,8 +82,10 @@ This repo can run without robbie or a pi. There is a stand in for layer C and la
           ros/                (the message definitions only) ROS 2 message package for the B to C interface
         robbie-lib-py          
           emotion/          So services getting an emotion state as messages, use unified emotion code (ie: AVD -> isHappy())
+          relm/
         robbie-lib-rs       (synced agentic port of robbie-lib-py)
           emotion/
+          relm/
         robbie-lib-test     Shared test data (so agentic porting is proven correct) 
 
       agent/                (layer a) one folder per container, any language

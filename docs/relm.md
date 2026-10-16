@@ -25,13 +25,13 @@ This is RELM, what the llm outputs:
 This is the RELM to Intermediate RELM (IRELM) table.
 
         # Macro,   IRELM
-        p           = <PAUSE 0.5>           # paragraph pause
-        pleasant    = <VAD 4, 3, 3>
-        happy       = <VAD 4, 4, 3>
-        ecstatic    = <VAD a=5, d=5>
-        emphasis    = <PROSODY s=0.6, v=1.5, p=0.75>
-        widen_eyes  = <MESSAGE sub="eyes", action ="widen(0.8)">
-        /widen_eyes  = <MESSAGE sub="eyes", action ="widen(None)">
+        p           = <PAUSE duration="0.5"/>           # paragraph pause
+        pleasant    = <VAD v="4" a="3" d="3">
+        happy       = <VAD v="4" a="4" d="3">
+        ecstatic    = <VAD a="5" d="5">
+        emphasis    = <PROSODY s="0.6" v="1.5" p="0.75">
+        widen_eyes  = <MESSAGE sub="eyes" action="widen(0.8)"/>
+        /widen_eyes  = <MESSAGE sub="eyes" action="widen(None)"/>
 
 
 so the RELM message (llm side)
@@ -40,33 +40,45 @@ so the RELM message (llm side)
 
 expands to (llm side)
 
-        <VAD 4, 4, 3> She asked me to buy <MESSAGE sub="eyes", action ="widen(0.8)">
-        <PROSODY s=0.6, v=1.5, p=0.75>roses</PROSODY><MESSAGE sub="eyes", action ="widen(None)"></VAD>
+        <IRELM>
+        <VAD v="4" a="4" d="3"> She asked me to buy <MESSAGE sub="eyes" action="widen(0.8)"/>
+        <PROSODY s="0.6" v="1.5" p="0.75">roses</PROSODY><MESSAGE sub="eyes" action="widen(None)"/></VAD>
+        </IRELM>
 
 
 Alternative --stateless
-        <VAD 4, 4, 3>
+        <IRELM>
+        <VAD v="4" a="4" d="3"/>
         She asked me to buy 
-        <MESSAGE sub="eyes", action ="widen(0.8)">
-        <PROSODY s=0.6, v=1.5, p=0.75>
+        <MESSAGE sub="eyes" action="widen(0.8)"/>
+        <PROSODY s="0.6" v="1.5" p="0.75"/>
         roses
-        <PROSODY None>
-        <MESSAGE sub="eyes", action ="widen(None)">
-        <VAD None>
+        <PROSODY p="none" s="none" r="none" v="none"/>
+        <MESSAGE sub="eyes" action="widen(None)"/>
+        <VAD v="none" a="none" d="none"/>
+        </IRELM>
 
 
 # IRELM spec
 
-VAD and PROSODY params are optional. A missing param takes the default for that command.
+IRELM is XML. A message is wrapped in <IRELM> ... </IRELM>, params are attributes, and text is escaped as XML (e.g. &amp; and &lt;).
+Commands that are not spans (MESSAGE, BEEP, AUDIO, PAUSE) are self-closing tags, e.g. <PAUSE duration="0.5"/>.
+
+VAD and PROSODY params are optional. A missing param means "none".
+
+**"none" means the enclosing value still applies.**
+  - Inside another span, the value from the enclosing span is kept.
+    e.g. <VAD v="4" a="4" d="3"> ... <VAD a="5"> ... </VAD> ... </VAD> gives v=4, a=5, d=3 for the inner span.
+  - With no enclosing span, nothing in RELM constrains the param, so the listener uses its own state (e.g. a mood).
+  - In the macro table this lets an expression blend with the mood, e.g. <VAD a="5"> sets arousal only.
 
   - VAD  (valence, arousal, dominance) 
-    - default is (3,3,3)
     - params aliased to (v, a, d)
     - scale is 1 to 5, 3 being neutral.
      
   - PROSODY (pitch, speed, range, volume)
     - params aliased to (p, s, r, v)
-    - default is (1.0, 1.0, 1.0, 1.0) which means 100% of the system's current configuration.
+    - 1.0 means 100% of the system's current configuration.
     - the values are multipliers. So s=0.8 means 20% slower.
 
   - MESSAGE (sub, action)
@@ -88,17 +100,17 @@ VAD and PROSODY params are optional. A missing param takes the default for that 
     - param is the file name, or a key, your listener decides what to do with it.
     - blocks speech
 
-  - PAUSE
+  - PAUSE (duration)
     - param is a duration in seconds
     - blocks speech
 
-  - VOICE
+  - VOICE (voice, locale)
     - changes voice for a bit, as in to imitate or help with storytelling.
     - params are a "voice" name and a "locale", tune it to match your TTS setup.
     - this is not where you configure the default voice, it's for adopting a temporary voice.
     - locale is only used as a param passed to the listener. It's not used in relation to AS.
     - VOICE is a span: the closing tag (handled by the stack) returns to the previous voice.
-      In stateless mode the close is sent as <VOICE None>.
+      In stateless mode the close is sent as <VOICE voice="none" locale="none"/>.
   
   - AS (format, locale) 
     - __format__ is one of datetime|number|digits|characters|unit|currency
@@ -109,6 +121,7 @@ VAD and PROSODY params are optional. A missing param takes the default for that 
       - unit:  "15s"  becomes "fifteen seconds"
     - __locale__ is for overriding the locale, otherwise as per --locale, or LOCALE as defined in env.
                 unaffected by the locale param to VOICE.
+    - AS is a span around the text to expand, e.g. <AS format="datetime">14:30</AS>
     - NOTE: AS is expanded by the RELM parser, the listener does not need to understand it.
     
 
@@ -121,7 +134,7 @@ Note: things like "/emphasis" don't need to be defined because the stack will ta
 **PAUSE** is the tool to sync anim ends, there are no end marks.
 
         # winks then continues talking
-        wink  = <MESSAGE sub="eyes", action ="wink(right)"> <PAUSE 0.2>
+        wink  = <MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>
 
 So the wink message is sent and the delay must be calibrated to the system.
 
@@ -129,7 +142,7 @@ So the wink message is sent and the delay must be calibrated to the system.
 # Stateless mode
 
 In stateless mode the stack is resolved and the listener needs to adopt the new settings as they arrive.
-Getting <VAD None> means the RELM system is not placing a constraint on the displayed state. So simplistically it could mean return to default state. But perhaps there is a persistent mood modeled in the system and this would mean return to current mood. Perhaps if the system was simple and rested on neutral expression, <VAD None> will equate to <VAD 3, 3, 3> (neutral).
+Getting <VAD v="none" a="none" d="none"/> means the RELM system is not placing a constraint on the displayed state. So simplistically it could mean return to default state. But perhaps there is a persistent mood modeled in the system and this would mean return to current mood. Perhaps if the system was simple and rested on neutral expression, <VAD v="none" a="none" d="none"/> will equate to <VAD v="3" a="3" d="3"/> (neutral).
 
 Stateless output has to emit the full state at every change. For example, this RELM
 
@@ -137,12 +150,15 @@ Stateless output has to emit the full state at every change. For example, this R
 
 is sent in stateless mode as
 
-        <VAD 4, 4, 3>  I won
-        <VAD 3, 5, 5>  the lottery
-        <VAD 4, 4, 3>  but lost the ticket
-        <VAD None>
+        <IRELM>
+        <VAD v="4" a="4" d="3"/> I won
+        <VAD v="4" a="5" d="5"/> the lottery
+        <VAD v="4" a="4" d="3"/> but lost the ticket
+        <VAD v="none" a="none" d="none"/>
+        </IRELM>
 
-Closing ecstatic sends happy's state again, not <VAD None>. <VAD None> is only sent once nothing is left on the stack.
+ecstatic sets no valence, so happy's v=4 still applies.
+Closing ecstatic sends happy's state again, not <VAD v="none" a="none" d="none"/>, which is only sent once nothing is left on the stack.
 
 
 # relm.py / relm.rs
