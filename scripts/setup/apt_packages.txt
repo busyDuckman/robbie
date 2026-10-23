@@ -1,0 +1,9 @@
+# System packages needed for development, one per line. Installed with apt by just setup.
+libasound2-dev
+pkg-config
+
+# Not installed by just setup: to hear the listener run directly in WSL (not in its container),
+# ALSA needs routing to WSLg's PulseAudio:
+#     sudo apt install libasound2-plugins
+#     printf 'pcm.!default { type pulse }\nctl.!default { type pulse }\n' > ~/.asoundrc
+# The listener container carries its own (services/listener).

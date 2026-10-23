@@ -1,22 +1,22 @@
 {
-  "_about": "RELM in, IRELM out. table defaults to example_table.yaml. options are the relm CLI flags (stateless, strict, locale). A case has output or error (an error kind).",
+  "_about": "RELM in, IRELM out. table defaults to example_table.yaml. options are the relm CLI flags (stateless, strict, locale). A case has output or error (an error kind). A case with inputs and outputs runs several replies through one converter, so MESSAGE ids carry on from reply to reply.",
   "cases": [
     {
       "name": "doc example, stack",
       "input": "<happy> She asked me to buy <widen_eyes><emphasis>roses</emphasis></widen_eyes></happy>",
-      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><PROSODY s=\"0.6\" v=\"1.5\" p=\"0.75\">roses</PROSODY><MESSAGE sub=\"eyes\" action=\"widen(None)\"/></VAD></IRELM>"
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/><PROSODY s=\"0.6\" v=\"1.5\" p=\"0.75\">roses</PROSODY><MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/></VAD></IRELM>"
     },
     {
       "name": "doc example, stateless",
       "input": "<happy> She asked me to buy <widen_eyes><emphasis>roses</emphasis></widen_eyes></happy>",
       "options": {"stateless": true},
-      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/>roses<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+      "output": "<VAD v=\"4\" a=\"4\" d=\"3\"/> She asked me to buy <MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/>roses<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/><VAD v=\"none\" a=\"none\" d=\"none\"/>"
     },
     {
       "name": "lottery, stateless resolves none to the enclosing value",
       "input": "<happy> I won <ecstatic>the lottery</ecstatic> but lost the ticket </happy>",
       "options": {"stateless": true},
-      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/> I won <VAD v=\"4\" a=\"5\" d=\"5\"/>the lottery<VAD v=\"4\" a=\"4\" d=\"3\"/> but lost the ticket <VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+      "output": "<VAD v=\"4\" a=\"4\" d=\"3\"/> I won <VAD v=\"4\" a=\"5\" d=\"5\"/>the lottery<VAD v=\"4\" a=\"4\" d=\"3\"/> but lost the ticket <VAD v=\"none\" a=\"none\" d=\"none\"/>"
     },
     {
       "name": "lottery, stack",
@@ -42,7 +42,7 @@
     {
       "name": "self-closed span macro opens and closes at once",
       "input": "<widen_eyes/>look<happy/>",
-      "output": "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\"/>look<VAD v=\"4\" a=\"4\" d=\"3\"></VAD></IRELM>"
+      "output": "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/><MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/>look<VAD v=\"4\" a=\"4\" d=\"3\"></VAD></IRELM>"
     },
     {
       "name": "macro with two spans closes them in reverse",
@@ -53,13 +53,13 @@
       "name": "macro with two spans, stateless",
       "input": "<happy><excited>wow</excited></happy>",
       "options": {"stateless": true},
-      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"4\" a=\"5\" d=\"3\"/><PROSODY p=\"1.1\" s=\"1.2\" r=\"none\" v=\"none\"/>wow<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"none\" a=\"none\" d=\"none\"/></IRELM>"
+      "output": "<VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"4\" a=\"5\" d=\"3\"/><PROSODY p=\"1.1\" s=\"1.2\" r=\"none\" v=\"none\"/>wow<PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/><VAD v=\"4\" a=\"4\" d=\"3\"/><VAD v=\"none\" a=\"none\" d=\"none\"/>"
     },
     {
       "name": "explicit none in the table keeps the enclosing value",
       "input": "<emphasis><whisper>psst</whisper></emphasis>",
       "options": {"stateless": true},
-      "output": "<IRELM><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"0.5\"/>psst<PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/></IRELM>"
+      "output": "<PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"0.5\"/>psst<PROSODY p=\"0.75\" s=\"0.6\" r=\"none\" v=\"1.5\"/><PROSODY p=\"none\" s=\"none\" r=\"none\" v=\"none\"/>"
     },
     {
       "name": "same macro nested",
@@ -70,7 +70,7 @@
       "name": "voice span, stateless",
       "input": "<pirate>arr</pirate>",
       "options": {"stateless": true},
-      "output": "<IRELM><VOICE voice=\"cmu-bdl-hsmm\" locale=\"en_US\"/>arr<VOICE voice=\"none\" locale=\"none\"/></IRELM>"
+      "output": "<VOICE voice=\"cmu-bdl-hsmm\" locale=\"en_US\"/>arr<VOICE voice=\"none\" locale=\"none\"/>"
     },
     {
       "name": "beep and audio",
@@ -208,7 +208,7 @@
       "name": "AS is never sent in stateless mode",
       "input": "<spell>SHE</spell> <unit>15s</unit>",
       "options": {"stateless": true},
-      "output": "<IRELM>S H E fifteen seconds</IRELM>"
+      "output": "S H E fifteen seconds"
     },
     {
       "name": "inline table with long param names",
@@ -221,6 +221,49 @@
       "table_yaml": "say: <MESSAGE sub=\"log\" action='print(\"a &amp; b\")'/>\n",
       "input": "<say/>",
       "output": "<IRELM><MESSAGE sub=\"log\" action=\"print(&quot;a &amp; b&quot;)\"/></IRELM>"
+    },
+    {
+      "name": "ids pair opens and closes by position",
+      "input": "<surprise>oh</surprise>",
+      "output": "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/><MESSAGE sub=\"head\" action=\"tilt(0.3)\" id=\"2\"/>oh<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/><MESSAGE sub=\"head\" action=\"tilt(None)\" id=\"2\" close=\"true\"/></IRELM>"
+    },
+    {
+      "name": "ids carry on across replies",
+      "inputs": [
+        "<widen_eyes>a</widen_eyes>",
+        "<widen_eyes>b</widen_eyes><widen_eyes>c</widen_eyes>"
+      ],
+      "outputs": [
+        "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/>a<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/></IRELM>",
+        "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"2\"/>b<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"2\" close=\"true\"/><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"3\"/>c<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"3\" close=\"true\"/></IRELM>"
+      ]
+    },
+    {
+      "name": "nested opens of one macro get their own ids",
+      "input": "<widen_eyes>a<widen_eyes>b</widen_eyes>c</widen_eyes>",
+      "output": "<IRELM><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/>a<MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"2\"/>b<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"2\" close=\"true\"/>c<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/></IRELM>"
+    },
+    {
+      "name": "unclosed macro closes at the end with its id",
+      "input": "<happy><widen_eyes>a",
+      "output": "<IRELM><VAD v=\"4\" a=\"4\" d=\"3\"><MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/>a<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/></VAD></IRELM>"
+    },
+    {
+      "name": "ids in stateless mode",
+      "input": "<surprise>oh</surprise>",
+      "options": {"stateless": true},
+      "output": "<MESSAGE sub=\"eyes\" action=\"widen(0.8)\" id=\"1\"/><MESSAGE sub=\"head\" action=\"tilt(0.3)\" id=\"2\"/>oh<MESSAGE sub=\"eyes\" action=\"widen(None)\" id=\"1\" close=\"true\"/><MESSAGE sub=\"head\" action=\"tilt(None)\" id=\"2\" close=\"true\"/>"
+    },
+    {
+      "name": "messages in a macro with no /name get no id",
+      "input": "<cheer>yay</cheer><wink/>",
+      "output": "<IRELM><VAD v=\"4\"><MESSAGE sub=\"head\" action=\"nod()\"/>yay</VAD><MESSAGE sub=\"eyes\" action=\"wink(right)\"/><PAUSE duration=\"0.2\"/></IRELM>"
+    },
+    {
+      "name": "stateless plain text has no wrapper",
+      "input": "Hello there.",
+      "options": {"stateless": true},
+      "output": "Hello there."
     }
   ]
 }

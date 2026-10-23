@@ -1,6 +1,8 @@
 //! RELM (what the LLM writes) to IRELM, in stack or stateless mode.
 //! Port of robbie-lib-py/relm/convert.py, keep the two the same.
 
+use std::sync::atomic::{AtomicU64, Ordering};
+
 use serde::Deserialize;
 
 use super::markup::{
@@ -30,11 +32,16 @@ impl Default for Options {
 pub struct Converter {
     table: Table,
     options: Options,
+    ids: AtomicU64, // MESSAGE ids, unique for the life of the converter
 }
 
 impl Converter {
     pub fn new(table: Table, options: Options) -> Self {
-        Self { table, options }
+        Self {
+            table,
+            options,
+            ids: AtomicU64::new(1),
+        }
     }
 
     pub fn table(&self) -> &Table {
@@ -46,6 +53,7 @@ impl Converter {
         Run {
             table: &self.table,
             opt: &self.options,
+            ids: &self.ids,
             stack: Vec::new(),
             out: String::new(),
         }
@@ -53,20 +61,29 @@ impl Converter {
     }
 }
 
+/// Convert one reply with a fresh converter, so MESSAGE ids start at 1.
 pub fn convert(table: &Table, relm: &str, options: &Options) -> Result<String, RelmError> {
     Run {
         table,
         opt: options,
+        ids: &AtomicU64::new(1),
         stack: Vec::new(),
         out: String::new(),
     }
     .run(relm)
 }
 
+/// A macro on the stack, with the ids its messages were sent with.
+struct Open<'a> {
+    macro_: &'a Macro,
+    ids: Vec<u64>,
+}
+
 struct Run<'a> {
     table: &'a Table,
     opt: &'a Options,
-    stack: Vec<&'a Macro>,
+    ids: &'a AtomicU64,
+    stack: Vec<Open<'a>>,
     out: String,
 }
 
@@ -90,11 +107,14 @@ impl<'a> Run<'a> {
         if let Some(top) = self.stack.last().filter(|_| self.opt.strict) {
             return Err(RelmError::new(
                 ErrorKind::UnclosedTag,
-                format!("<{}> is never closed", top.name),
+                format!("<{}> is never closed", top.macro_.name),
             ));
         }
         while !self.stack.is_empty() {
             self.pop();
+        }
+        if self.opt.stateless {
+            return Ok(self.out);
         }
         Ok(format!("<IRELM>{}</IRELM>", self.out))
     }
@@ -106,7 +126,7 @@ impl<'a> Run<'a> {
             .stack
             .iter()
             .rev()
-            .flat_map(|m| m.spans().rev())
+            .flat_map(|o| o.macro_.spans().rev())
             .find(|c| c.name == "AS");
         let body = strip_ws(text);
         if let (Some(cmd), false) = (as_cmd, body.is_empty()) {
@@ -147,11 +167,25 @@ impl<'a> Run<'a> {
                 format!("<{}> takes no params", tag.name),
             ));
         }
+        // A macro with a "/name" entry gives each MESSAGE an id, its closes reuse them in order.
+        let ids: Vec<u64> = match m.paired() {
+            true => m
+                .open
+                .iter()
+                .filter(|c| c.name == "MESSAGE")
+                .map(|_| self.ids.fetch_add(1, Ordering::Relaxed))
+                .collect(),
+            false => Vec::new(),
+        };
         if !m.instant() {
-            self.stack.push(m);
+            self.stack.push(Open {
+                macro_: m,
+                ids: ids.clone(),
+            });
         }
+        let mut sent = ids.into_iter();
         for cmd in &m.open {
-            self.emit_open(cmd);
+            self.emit_open(cmd, &mut sent, false);
         }
         if tag.self_closing && !m.instant() {
             self.pop();
@@ -172,7 +206,7 @@ impl<'a> Run<'a> {
         if m.instant() {
             return Ok(());
         }
-        let Some(depth) = self.stack.iter().rposition(|s| std::ptr::eq(*s, m)) else {
+        let Some(depth) = self.stack.iter().rposition(|s| std::ptr::eq(s.macro_, m)) else {
             if self.opt.strict {
                 return Err(RelmError::new(
                     ErrorKind::UnexpectedClose,
@@ -182,7 +216,7 @@ impl<'a> Run<'a> {
             return Ok(());
         };
         if depth != self.stack.len() - 1 && self.opt.strict {
-            let top = &self.stack[self.stack.len() - 1].name;
+            let top = &self.stack[self.stack.len() - 1].macro_.name;
             return Err(RelmError::new(
                 ErrorKind::MismatchedClose,
                 format!("</{}> closes before </{top}>", tag.name),
@@ -195,12 +229,13 @@ impl<'a> Run<'a> {
     }
 
     fn pop(&mut self) {
-        let Some(m) = self.stack.pop() else { return };
-        for cmd in m.spans().rev() {
+        let Some(top) = self.stack.pop() else { return };
+        for cmd in top.macro_.spans().rev() {
             self.emit_close(cmd);
         }
-        for cmd in &m.close {
-            self.emit_open(cmd);
+        let mut ids = top.ids.into_iter();
+        for cmd in &top.macro_.close {
+            self.emit_open(cmd, &mut ids, true);
         }
     }
 
@@ -215,7 +250,7 @@ impl<'a> Run<'a> {
         for cmd in self
             .stack
             .iter()
-            .flat_map(|m| m.spans())
+            .flat_map(|o| o.macro_.spans())
             .filter(|c| c.name == kind)
         {
             for (k, v) in cmd.attrs.iter().filter(|(_, v)| v != "none") {
@@ -227,10 +262,21 @@ impl<'a> Run<'a> {
         tag_xml(kind, &values, true)
     }
 
-    fn emit_open(&mut self, cmd: &Command) {
+    /// ids: the ids for this macro's messages, taken in order (none if it has no "/name").
+    fn emit_open(&mut self, cmd: &Command, ids: &mut impl Iterator<Item = u64>, closing: bool) {
         let xml = match cmd.name.as_str() {
             "AS" => return, // expanded here, never sent
             _ if cmd.is_span() && self.opt.stateless => self.state(&cmd.name),
+            "MESSAGE" => match ids.next() {
+                Some(id) => {
+                    let mut extra = vec![("id".to_string(), id.to_string())];
+                    if closing {
+                        extra.push(("close".to_string(), "true".to_string()));
+                    }
+                    cmd.xml_with(true, &extra)
+                }
+                None => cmd.xml(true),
+            },
             _ => cmd.xml(!cmd.is_span()),
         };
         self.out.push_str(&xml);

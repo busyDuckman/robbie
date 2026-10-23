@@ -15,9 +15,15 @@ name = "relm"
 path = "bin/relm.rs"
 required-features = ["cli"]
 
+[[bin]]
+name = "listener"
+path = "bin/listener.rs"
+required-features = ["cli", "listener"]
+
 [features]
-default = ["cli"]
-cli = ["dep:clap", "dep:axum", "dep:tokio"]     # the relm binary; services using the lib can turn it off
+default = ["cli", "listener"]
+cli = ["dep:clap", "dep:axum", "dep:tokio"]     # the relm and listener binaries; services using the lib can turn it off
+listener = ["dep:kira", "dep:ureq"]            # the IRELM listener library (kira needs libasound2-dev on Linux)
 
 # The live list. Deliberately short: a new crate is a decision, not a convenience.
 [dependencies]
@@ -33,7 +39,9 @@ regex           = "1.13"
 serde_yaml_ng   = "0.10"         # the RELM to IRELM table
 clap            = { version = "4.6", features = ["derive"], optional = true }
 axum            = { version = "0.8", optional = true }      # relm --serve
-tokio           = { version = "1", features = ["rt-multi-thread", "macros", "sync"], optional = true }
+tokio           = { version = "1", features = ["rt-multi-thread", "macros", "sync", "signal"], optional = true }
+kira            = { version = "0.12", default-features = false, features = ["cpal", "wav", "ogg", "mp3", "flac"], optional = true }   # listener playback
+ureq            = { version = "3", optional = true }        # listener: MaryTTS requests
 
 [profile.dev]
 opt-level = 0
@@ -160,6 +168,12 @@ strip = "debuginfo"
 # ammonia       = "4.2"            # html sanitiser
 # unicode-security = "0.1"         # confusable and mixed-script detection
 # strip-ansi-escapes = "0.2"       # strip terminal control sequences before logging
+
+# --- audio and robot messaging (vetted 2026-10-16, for the RELM listener) ---
+# (in use) kira          = { version = "0.12", features = ["wav", "ogg", "mp3", "flac"] }   # audio playback
+# rust-mqtt     = "0.6"            # MQTT client, for --message-url mqtt://
+# rclrs         = "0.8"            # ROS 2 client, for --message-url ros: (needs a ROS 2 install)
+# (in use) ureq          = "3"              # blocking HTTP client (vetted 2026-10-17)
 
 # --- odd jobs ---
 # derivative    = "2.2"            # derive Debug while skipping fields, for native handles

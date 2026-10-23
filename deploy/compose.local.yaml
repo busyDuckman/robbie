@@ -4,3 +4,4 @@ name: robbie
 include:
   - compose.observability.yaml
   - ../services/voice/compose.yaml
+  - ../services/listener/compose.yaml

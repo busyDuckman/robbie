@@ -83,6 +83,12 @@ impl Command {
     pub fn xml(&self, self_closing: bool) -> String {
         tag_xml(&self.name, &self.attrs, self_closing)
     }
+
+    /// As xml, with more attrs after the table ones, e.g. a MESSAGE id.
+    pub fn xml_with(&self, self_closing: bool, extra: &[(String, String)]) -> String {
+        let attrs: Vec<(String, String)> = self.attrs.iter().chain(extra).cloned().collect();
+        tag_xml(&self.name, &attrs, self_closing)
+    }
 }
 
 pub(crate) fn tag_xml(name: &str, attrs: &[(String, String)], self_closing: bool) -> String {
@@ -104,6 +110,11 @@ pub struct Macro {
 impl Macro {
     pub fn spans(&self) -> impl DoubleEndedIterator<Item = &Command> {
         self.open.iter().filter(|c| c.is_span())
+    }
+
+    /// Has a "/name" entry, so its messages get ids that pair opens with closes.
+    pub fn paired(&self) -> bool {
+        !self.close.is_empty()
     }
 
     /// Nothing to undo, so the macro is never pushed on the stack.
@@ -292,6 +303,14 @@ impl Table {
             let Some(m) = table.macros.iter_mut().find(|m| m.name == base) else {
                 return Err(bad_table(format!("/{base} has no {base} entry")));
             };
+            let count = |cmds: &[Command]| cmds.iter().filter(|c| c.name == "MESSAGE").count();
+            let (opens, shuts) = (count(&m.open), count(&commands));
+            if opens != shuts {
+                return Err(bad_table(format!(
+                    "{base} has {opens} MESSAGE and /{base} has {shuts}, \
+                     they pair up in order so the counts must match"
+                )));
+            }
             m.close = commands;
         }
         Ok(table)

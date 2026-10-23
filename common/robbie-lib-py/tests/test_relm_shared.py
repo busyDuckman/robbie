@@ -29,12 +29,15 @@ def test_convert(case):
         table = Table.parse(case["table_yaml"])
     else:
         table = Table.load(DATA / case.get("table", "example_table.yaml"))
-    if "error" in case:
+    converter = Converter(table, Options(**case.get("options", {})))
+    if "inputs" in case:
+        assert [converter.convert(i) for i in case["inputs"]] == case["outputs"]
+    elif "error" in case:
         with pytest.raises(RelmError) as e:
-            Converter(table, Options(**case.get("options", {}))).convert(case["input"])
+            converter.convert(case["input"])
         assert e.value.kind == case["error"]
     else:
-        assert Converter(table, Options(**case.get("options", {}))).convert(case["input"]) == case["output"]
+        assert converter.convert(case["input"]) == case["output"]
 
 
 @pytest.mark.parametrize("case", TABLES, ids=_ids(TABLES))

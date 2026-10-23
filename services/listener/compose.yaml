@@ -1,0 +1,27 @@
+# RELM listener: IRELM in over HTTP, speech (MaryTTS), beeps and messages out.
+# Included by deploy/compose.local.yaml; try it with: just relm "<happy>hello there</happy>"
+# Messages go to stdout (docker logs) until the messaging layer exists.
+services:
+  listener:
+    build:
+      context: ../../common/robbie-lib-rs
+      dockerfile: ../../services/listener/Dockerfile
+      additional_contexts:
+        service: .
+    environment:
+      MARYTTS_URL: http://marytts:59125
+      # Local: play through WSLg's PulseAudio. On the Pi, pass /dev/snd instead (docs/pi_setp.md).
+      PULSE_SERVER: unix:/mnt/wslg/PulseServer
+    ports:
+      - "127.0.0.1:8110:8000"
+    volumes:
+      - ../../.config/local:/config:ro
+      - /mnt/wslg:/mnt/wslg
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    depends_on:
+      marytts:
+        condition: service_healthy

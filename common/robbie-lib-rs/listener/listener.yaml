@@ -1,0 +1,18 @@
+# listener.yaml: the listener's defaults (built in, so --config is only needed to change them).
+
+# The mood until one is set over the API (PUT /mood). VAD "none" falls back to it.
+mood: {v: 3, a: 3, d: 3}
+
+# VAD to prosody, for TTS engines without VAD (e.g. MaryTTS).
+# Each row is the prosody change per VAD step away from neutral (3), added up over v, a and d.
+# e.g. a=5 is two steps up, so with a.s = 0.08 speech is 16% faster.
+# The result multiplies PROSODY (p pitch, s speed, r range, v volume), clamped to 0.2 to 4.
+# A row left out keeps its default; a param left out of a row you write is 0.
+#
+# A starting point, not tuned: arousal moves everything most, valence lifts pitch and range,
+# dominance is louder, a little lower and slower.
+# happy (4,4,3): pitch +9%, speed +10%. sad (2,2,2): pitch -6%, speed -8%, quieter.
+vad_prosody:
+  v: {p: 0.03, s: 0.02, r: 0.08, v: 0.0}
+  a: {p: 0.06, s: 0.08, r: 0.10, v: 0.06}
+  d: {p: -0.03, s: -0.02, r: 0.0, v: 0.06}

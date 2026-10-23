@@ -45,8 +45,9 @@ class Command:
                 return v
         return None
 
-    def xml(self, self_closing: bool) -> str:
-        attrs = "".join(f' {k}="{escape_attr(v)}"' for k, v in self.attrs)
+    def xml(self, self_closing: bool, extra: tuple = ()) -> str:
+        """extra: more (key, value) attrs after the table ones, e.g. a MESSAGE id."""
+        attrs = "".join(f' {k}="{escape_attr(v)}"' for k, v in [*self.attrs, *extra])
         return f"<{self.name}{attrs}{'/' if self_closing else ''}>"
 
 
@@ -59,6 +60,11 @@ class Macro:
     @property
     def spans(self) -> list:
         return [c for c in self.open if c.is_span]
+
+    @property
+    def paired(self) -> bool:
+        """Has a "/name" entry, so its messages get ids that pair opens with closes."""
+        return bool(self.close)
 
     @property
     def instant(self) -> bool:
@@ -204,6 +210,11 @@ class Table:
             if base not in self.macros:
                 raise RelmError("bad_table", f"/{base} has no {base} entry")
             self.macros[base].close = commands
+            opens = sum(c.name == "MESSAGE" for c in self.macros[base].open)
+            shuts = sum(c.name == "MESSAGE" for c in commands)
+            if opens != shuts:
+                raise RelmError("bad_table", f"{base} has {opens} MESSAGE and /{base} has {shuts}, "
+                                             "they pair up in order so the counts must match")
 
     @classmethod
     def parse(cls, text: str) -> "Table":

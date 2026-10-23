@@ -1,0 +1,11 @@
+# RELM listener settings for services/listener (see common/robbie-lib-rs/listener/listener.yaml).
+
+default:
+  # The mood until one is set over the API (PUT /mood). VAD "none" falls back to it.
+  mood: {v: 3, a: 3, d: 3}
+
+  # Prosody change per VAD step away from neutral (3). The listener's defaults, to tune for Robbie.
+  vad_prosody:
+    v: {p: 0.03, s: 0.02, r: 0.08, v: 0.0}
+    a: {p: 0.06, s: 0.08, r: 0.10, v: 0.06}
+    d: {p: -0.03, s: -0.02, r: 0.0, v: 0.06}

@@ -120,6 +120,8 @@ VAD and PROSODY params are optional. A missing param means "none".
                  "14:30" becomes "two thirty p m".
                  (etc)
       - currency: $12.50 becomes "twelve dollars fifty cents".
+                 A currency code names the currency, e.g. "12.50 AUD" or "USD 5".
+                 Outside its own country it is read with the country, e.g. "twelve Australian dollars fifty cents".
       - unit:  "15s"  becomes "fifteen seconds"
     - __locale__ is for overriding the locale, otherwise as per --locale, or LOCALE as defined in env.
                 unaffected by the locale param to VOICE.
@@ -152,12 +154,10 @@ Stateless output has to emit the full state at every change. For example, this R
 
 is sent in stateless mode as
 
-        <IRELM>
         <VAD v="4" a="4" d="3"/> I won
         <VAD v="4" a="5" d="5"/> the lottery
         <VAD v="4" a="4" d="3"/> but lost the ticket
         <VAD v="none" a="none" d="none"/>
-        </IRELM>
 
 ecstatic sets no valence, so happy's v=4 still applies.
 Closing ecstatic sends happy's state again, not <VAD v="none" a="none" d="none"/>, which is only sent once nothing is left on the stack.

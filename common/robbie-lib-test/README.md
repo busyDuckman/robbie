@@ -10,3 +10,7 @@ Shared test data for robbie-lib-py and robbie-lib-rs. Both libraries run the sam
   - `say_as_cases.json`   AS expansion: format, locale and text in, words out.
 
 The tests compare error kinds, not messages.
+
+## listener/
+
+  - `acoustparams_marks.xml`  MaryTTS ACOUSTPARAMS for a MaryXML document with marks, for the mark timing test.

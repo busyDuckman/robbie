@@ -71,6 +71,19 @@ fn currency_names(symbol: char) -> [&'static str; 4] {
     }
 }
 
+/// A currency code: (home region, qualifier when read elsewhere, symbol for the names).
+fn currency_code(code: &str) -> Option<(&'static str, &'static str, char)> {
+    Some(match code {
+        "USD" => ("us", "US", '$'),
+        "AUD" => ("au", "Australian", '$'),
+        "NZD" => ("nz", "New Zealand", '$'),
+        "CAD" => ("ca", "Canadian", '$'),
+        "GBP" => ("gb", "", POUND),
+        "EUR" => ("", "", EURO),
+        _ => return None,
+    })
+}
+
 fn unit_names(unit: &str) -> Option<(&'static str, &'static str)> {
     Some(match unit {
         "ms" => ("millisecond", "milliseconds"),
@@ -115,8 +128,11 @@ static RE_DATE_ISO: LazyLock<Regex> =
     LazyLock::new(|| re(r"^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$"));
 static RE_DATE: LazyLock<Regex> =
     LazyLock::new(|| re(r"^([0-9]{1,2})[/.-]([0-9]{1,2})[/.-]([0-9]{4}|[0-9]{2})$"));
-static RE_CURRENCY: LazyLock<Regex> =
-    LazyLock::new(|| re(r"^([$\x{A3}\x{20AC}]?)[ \t]*([0-9][0-9,]*)(?:\.([0-9]{1,2}))?$"));
+static RE_CURRENCY: LazyLock<Regex> = LazyLock::new(|| {
+    re(
+        r"^(?:([A-Z]{3})[ \t]*)?([$\x{A3}\x{20AC}]?)[ \t]*([0-9][0-9,]*)(?:\.([0-9]{1,2}))?(?:[ \t]*([A-Z]{3}))?$",
+    )
+});
 static RE_UNIT: LazyLock<Regex> =
     LazyLock::new(|| re(r"^([+-]?[0-9][0-9,]*(?:\.[0-9]+)?)[ \t]*([^ \t0-9][^ \t]*)$"));
 
@@ -377,21 +393,37 @@ fn datetime(text: &str, us: bool, gb: bool) -> Option<Words> {
 
 fn currency(text: &str, reg: &str, gb: bool) -> Option<Words> {
     let m = RE_CURRENCY.captures(text)?;
-    let whole = m[2].replace(',', "");
+    let (code, code_after) = (m.get(1), m.get(5));
+    let mut symbol = m[2].chars().next();
+    if (code.is_some() && code_after.is_some())
+        || (code.or(code_after).is_some() && symbol.is_some())
+    {
+        return None;
+    }
+    let whole = m[3].replace(',', "");
     let major = parse_int(&whole)?;
-    let symbol = m[1].chars().next().unwrap_or(match reg {
+    let mut qualifier = Words::new();
+    if let Some(code) = code.or(code_after) {
+        let (home, country, sym) = currency_code(code.as_str())?;
+        if !country.is_empty() && home != reg {
+            qualifier = country.split(' ').map(String::from).collect();
+        }
+        symbol = Some(sym);
+    }
+    let symbol = symbol.unwrap_or(match reg {
         "gb" => POUND,
         "ie" => EURO,
         _ => '$',
     });
     let [one, many, one_minor, many_minor] = currency_names(symbol);
-    let minor: u64 = match m.get(3) {
+    let minor: u64 = match m.get(4) {
         Some(frac) => format!("{:0<2}", frac.as_str()).parse().ok()?,
         None => 0,
     };
     let mut w = Words::new();
     if major != 0 || minor == 0 {
         w.extend(int_words(major, gb));
+        w.extend(qualifier);
         w.push(if major == 1 { one } else { many }.into());
     }
     if minor != 0 {

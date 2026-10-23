@@ -1,0 +1,15 @@
+default: serve
+
+# For those rare times when actions genuinely need to be taken after docker creates the container.
+setup:
+
+# Run unit tests
+test:
+
+# Run the service. With PULSE_SERVER set, ALSA plays through PulseAudio, otherwise the sound card (/dev/snd).
+serve:
+    if [ -n "${PULSE_SERVER:-}" ]; then cp asound_pulse.conf /etc/asound.conf; fi
+    exec listener --serve 8000 --host 0.0.0.0 --config /config/robbie_services/listener.yaml --tts-url "${MARYTTS_URL:-http://marytts:59125}" --message-url stdout:
+
+# Run CI tests
+vet: test

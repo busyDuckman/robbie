@@ -1,6 +1,6 @@
 _banner_line := "------------------------------------------------------------"
 
-# Native Windows is not supported for development (ADR 4). Shows 
+# Native Windows is not supported for development (ADR 4). Shows a message if that is attempted.
 _platform_guard := if os() == "windows" { error("\n" + RED + _banner_line + "\nRobbie is developed on Linux or WSL 2.\nRun just from a WSL or Linux shell.\n" + _banner_line + NORMAL + "\n") } else { "" }
 
 # List the available recipes
@@ -16,6 +16,7 @@ default:
 #   - it will copy .env.example to .env and set it up
 #   - just setup --redo  offers to set up the AI model again
 setup *flags:
+    @bash scripts/setup/setup_apt.sh
     @python3 scripts/setup/setup_models.py {{ flags }}
     @for f in config/*/.env.example; do [ -e "${f%.example}" ] || cp "$f" "${f%.example}"; done
 
@@ -54,13 +55,13 @@ deploy-robbie: _update_configs
 # get the pi version of robbie, and the backend running
 run-robbie: backend-up
 
-stop-robbie: backend-up
+stop-robbie: && backend-down
 
 
 # get the pi version of robbies backend running
 backend-up:
 
-# get the pi version of robbies backend running
+# stop the pi version of robbies backend
 backend-down:
 
 
@@ -95,6 +96,11 @@ say text="": _update_configs
     @ffplay -nodisp -autoexit -loglevel error .temp/say.wav
 
 
+# speak RELM through relm and the listener service (needs just up), e.g. just relm "<happy>hello</happy>"
+relm text: _update_configs
+    @printf '%s' {{ quote(text) }} | uv run -q --project common/robbie-lib-py relm --table config/relm_table.yaml | curl -fsS --data-binary @- http://127.0.0.1:8110/say
+    @echo
+
 _compose_llm := "docker compose --project-directory . --env-file config/robbie_agent/.env -f agent/llm/compose.yaml"
 
 # start the LLM server (llama.cpp in Docker, on the GPU) and wait until the model is loaded
@@ -109,7 +115,7 @@ llm-down:
 chat: llm-up
     @mkdir -p .temp
     @uv run -q --project common/robbie-lib-py python scripts/relm_grammar.py --table config/relm_table.yaml --out .temp/relm.gbnf
-    @uv run -q --project agent/llm robbie-chat --table config/relm_table.yaml --persona prompts/robbie_persona/system.md --grammar .temp/relm.gbnf
+    @uv run -q --env-file config/robbie_agent/.env --project agent/llm robbie-chat --table config/relm_table.yaml --persona prompts/robbie_persona/system.md --grammar .temp/relm.gbnf
 
 
 ## --------------------------------------------------------------------------------------------------------------------

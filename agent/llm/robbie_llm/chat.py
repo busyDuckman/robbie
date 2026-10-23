@@ -29,6 +29,8 @@ def _args(argv):
     p.add_argument("--table", required=True, help="the RELM table (YAML)")
     p.add_argument("--persona", required=True, help="the persona system prompt")
     p.add_argument("--grammar", help="GBNF grammar from scripts/relm_grammar.py")
+    p.add_argument("--locale", default=os.environ.get("LOCALE") or "en_GB",
+                   help="locale for RELM AS (default: $LOCALE, then en_GB)")
     return p.parse_args(argv)
 
 
@@ -40,7 +42,7 @@ def main(argv=None):
         with open(args.grammar, encoding="utf-8") as f:
             grammar = f.read()
     llm = RobbieLLM(args.url, system_prompt(args.persona, table), grammar)
-    strict = Converter(table, Options(strict=True))
+    strict = Converter(table, Options(strict=True, locale=args.locale))
     constrained, show_irelm = grammar is not None, False
 
     print(f"{DIM}Chatting with Robbie at {args.url}. /quit to leave, /grammar, /irelm, /system, /reset.")

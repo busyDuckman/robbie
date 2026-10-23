@@ -54,7 +54,10 @@ fn report(failures: Vec<String>, total: usize) {
 #[derive(Deserialize)]
 struct ConvertCase {
     name: String,
+    #[serde(default)]
     input: String,
+    inputs: Option<Vec<String>>,
+    outputs: Option<Vec<String>>,
     #[serde(default)]
     options: Options,
     table: Option<String>,
@@ -76,8 +79,19 @@ fn convert_cases() {
                 }
             }
             .expect("table loads");
-            let got = Converter::new(table, c.options.clone()).convert(&c.input);
-            check(&c.name, got, &c.output, &c.error)
+            let converter = Converter::new(table, c.options.clone());
+            if let (Some(inputs), Some(outputs)) = (&c.inputs, &c.outputs) {
+                let got: Result<Vec<String>, RelmError> =
+                    inputs.iter().map(|i| converter.convert(i)).collect();
+                return match got {
+                    Ok(got) if got == *outputs => None,
+                    got => Some(format!(
+                        "{}\n    want: {outputs:?}\n    got:  {got:?}",
+                        c.name
+                    )),
+                };
+            }
+            check(&c.name, converter.convert(&c.input), &c.output, &c.error)
         })
         .collect();
     report(failures, all.len());

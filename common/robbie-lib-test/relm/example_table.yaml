@@ -7,6 +7,9 @@ ecstatic:    <VAD a="5" d="5">
 emphasis:    <PROSODY s="0.6" v="1.5" p="0.75">
 widen_eyes:  <MESSAGE sub="eyes" action="widen(0.8)"/>
 /widen_eyes: <MESSAGE sub="eyes" action="widen(None)"/>
+surprise:    <MESSAGE sub="eyes" action="widen(0.8)"/><MESSAGE sub="head" action="tilt(0.3)"/>
+/surprise:   <MESSAGE sub="eyes" action="widen(None)"/><MESSAGE sub="head" action="tilt(None)"/>
+cheer:       <VAD v="4"><MESSAGE sub="head" action="nod()"/>
 wink:        <MESSAGE sub="eyes" action="wink(right)"/><PAUSE duration="0.2"/>
 excited:     <VAD a="5"><PROSODY s="1.2" p="1.1">
 pirate:      <VOICE voice="cmu-bdl-hsmm" locale="en_US">

@@ -2,7 +2,9 @@
 
 English only. A locale with region US uses US style (no "and" in numbers, month first
 dates, meter/liter). Every other locale uses British style. The default currency is the
-pound for GB, the euro for IE, otherwise the dollar.
+pound for GB, the euro for IE, otherwise the dollar. A currency code (e.g. "12.50 AUD")
+names the currency, and is read with its country (e.g. "Australian dollars") unless it is
+the locale's own.
 """
 import re
 
@@ -20,6 +22,10 @@ _ORDINALS = {"one": "first", "two": "second", "three": "third", "five": "fifth",
 _CURRENCIES = {"$": ("dollar", "dollars", "cent", "cents"),
                "\u00a3": ("pound", "pounds", "penny", "pence"),
                "\u20ac": ("euro", "euros", "cent", "cents")}
+# code: (home region, qualifier when read elsewhere, symbol for the names)
+_CODES = {"USD": ("us", "US", "$"), "AUD": ("au", "Australian", "$"),
+          "NZD": ("nz", "New Zealand", "$"), "CAD": ("ca", "Canadian", "$"),
+          "GBP": ("gb", "", "\u00a3"), "EUR": ("", "", "\u20ac")}
 _UNITS = {
     "ms": ("millisecond", "milliseconds"), "s": ("second", "seconds"),
     "sec": ("second", "seconds"), "min": ("minute", "minutes"),
@@ -45,7 +51,8 @@ _RE_TIME = re.compile(r"^([0-9]{1,2}):([0-9]{2})(?::([0-9]{2}))?(?:[ \t]*([aApP]
 _RE_YEAR = re.compile(r"^[0-9]{4}$")
 _RE_DATE_ISO = re.compile(r"^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$")
 _RE_DATE = re.compile(r"^([0-9]{1,2})[/.-]([0-9]{1,2})[/.-]([0-9]{4}|[0-9]{2})$")
-_RE_CURRENCY = re.compile(r"^([$\u00a3\u20ac]?)[ \t]*([0-9][0-9,]*)(?:\.([0-9]{1,2}))?$")
+_RE_CURRENCY = re.compile(
+    r"^(?:([A-Z]{3})[ \t]*)?([$\u00a3\u20ac]?)[ \t]*([0-9][0-9,]*)(?:\.([0-9]{1,2}))?(?:[ \t]*([A-Z]{3}))?$")
 _RE_UNIT = re.compile(r"^([+-]?[0-9][0-9,]*(?:\.[0-9]+)?)[ \t]*([^ \t0-9][^ \t]*)$")
 
 
@@ -224,16 +231,27 @@ def _currency(text: str, reg: str, gb: bool):
     m = _RE_CURRENCY.fullmatch(text)
     if not m:
         return None
-    whole = m.group(2).replace(",", "")
+    code, symbol, whole, frac, code_after = m.groups()
+    if (code and code_after) or ((code or code_after) and symbol):
+        return None
+    code = code or code_after
+    if code and code not in _CODES:
+        return None
+    whole = whole.replace(",", "")
     if len(whole) > MAX_DIGITS:
         return None
-    symbol = m.group(1) or ("\u00a3" if reg == "gb" else "\u20ac" if reg == "ie" else "$")
+    qualifier = []
+    if code:
+        home, country, symbol = _CODES[code]
+        if country and home != reg:
+            qualifier = country.split(" ")
+    symbol = symbol or ("\u00a3" if reg == "gb" else "\u20ac" if reg == "ie" else "$")
     one, many, one_minor, many_minor = _CURRENCIES[symbol]
     major = int(whole)
-    minor = int(m.group(3).ljust(2, "0")) if m.group(3) else 0
+    minor = int(frac.ljust(2, "0")) if frac else 0
     words = []
     if major or not minor:
-        words += int_words(major, gb) + [one if major == 1 else many]
+        words += int_words(major, gb) + qualifier + [one if major == 1 else many]
     if minor:
         words += int_words(minor, gb) + [one_minor if minor == 1 else many_minor]
     return words
