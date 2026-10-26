@@ -32,3 +32,9 @@ The backend for the system (layer A and parts of B too heave to run on a PI) wil
 Status: Accepted
 
 Development is done on Linux, or on Windows inside WSL 2. Native Windows is not supported for development. On WSL 2, the repo should live in the WSL filesystem (for example under `/home`), not on a Windows drive under `/mnt/c`.
+
+## ADR 5: The ROS 2 bridge node runs on the Pi
+
+Status: Accepted
+
+The ROS 2 bridge node (see ADR 2) is part of Layer B and is launched by B. It runs on the Pi.

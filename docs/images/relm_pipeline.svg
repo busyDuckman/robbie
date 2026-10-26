@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="800" viewBox="0 0 860 800" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>How RELM works</title>
+  <style>
+    .card { fill: #fafbfc; stroke: #d0d7de; }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.2; }
+    .strip { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.2; }
+    .h { font-size: 14px; font-weight: 700; fill: #1f2937; }
+    .t { font-size: 13px; fill: #374151; }
+    .note { font-size: 12px; fill: #6b7280; }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', monospace; font-size: 11.5px; fill: #1f2937; }
+    .small { font-size: 11px; }
+    .vad { fill: #7c3aed; font-weight: 700; }
+    .pros { fill: #2563eb; font-weight: 700; }
+    .beep { fill: #d97706; font-weight: 700; }
+    .pause { fill: #6b7280; font-weight: 700; }
+    .msg { fill: #059669; font-weight: 700; }
+    .flow { stroke: #64748b; stroke-width: 1.6; fill: none; }
+    .dash { stroke: #64748b; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="card" x="0.5" y="0.5" width="859" height="799" rx="16"/>
+
+  <text x="30" y="42" font-size="24" font-weight="700" fill="#111827">How RELM works</text>
+  <text x="30" y="68" font-size="16" fill="#111827">Robbie Expressive Markup Language (RELM)</text>
+  
+  <!-- 1. LLM -->
+  <rect class="box" x="30" y="90" width="300" height="120" rx="10"/>
+  <text x="46" y="116" class="h">1. The LLM</text>
+  <text x="46" y="142" class="t">Generative performance using a simple grammar </text>
+  <text x="46" y="162" class="t">Can only use tags the robot knows</text>
+  <text x="46" y="182" class="note">(grammar constrained decoding)</text>
+
+  <!-- RELM table -->
+  <rect class="strip" x="520" y="90" width="310" height="120" rx="8"/>
+  <text x="536" y="116" class="h">RELM table (YAML, one per robot)</text>
+  <text x="536" y="142" class="code small" xml:space="preserve">excited:    <tspan class="vad">&lt;VAD v="5" a="5" d="3"&gt;</tspan></text>
+  <text x="536" y="160" class="code small" xml:space="preserve">emphasis:   <tspan class="pros">&lt;PROSODY s="0.6" ...&gt;</tspan></text>
+  <text x="536" y="178" class="code small" xml:space="preserve">widen_eyes: <tspan class="msg">&lt;MESSAGE sub="eyes" ...&gt;</tspan></text>
+  <text x="536" y="196" class="code small" xml:space="preserve">chirp:      <tspan class="beep">&lt;BEEP melody="..."/&gt;</tspan></text>
+
+  <!-- table to LLM: grammar -->
+  <path class="flow" d="M518 150 H336" marker-end="url(#arrow)"/>
+  <text x="427" y="140" class="note" text-anchor="middle">tag names become</text>
+  <text x="427" y="170" class="note" text-anchor="middle">a grammar</text>
+
+  <!-- 2. RELM -->
+  <path class="flow" d="M180 210 V234" marker-end="url(#arrow)"/>
+  <rect class="strip" x="30" y="240" width="760" height="64" rx="8"/>
+  <text x="46" y="262" class="h">RELM (LLM friendly)</text>
+  <text x="46" y="289" class="code" xml:space="preserve"><tspan class="vad">&lt;excited&gt;</tspan><tspan class="beep">&lt;chirp/&gt;</tspan>You found it!<tspan class="vad">&lt;/excited&gt;</tspan><tspan class="pause">&lt;beat/&gt;</tspan><tspan class="msg">&lt;widen_eyes&gt;</tspan>That's the <tspan class="pros">&lt;emphasis&gt;</tspan>last<tspan class="pros">&lt;/emphasis&gt;</tspan> piece.<tspan class="msg">&lt;/widen_eyes&gt;</tspan></text>
+
+  <!-- table to converter -->
+  <path class="flow" d="M810 210 V358 H796" marker-end="url(#arrow)"/>
+
+  <!-- 2. converter -->
+  <path class="flow" d="M180 304 V328" marker-end="url(#arrow)"/>
+  <rect class="box" x="30" y="334" width="760" height="48" rx="10"/>
+  <text x="46" y="363" class="t"><tspan class="h">2. relm parser</tspan> (expands each tag using the table)</text>
+
+  <!-- IRELM -->
+  <path class="flow" d="M180 382 V406" marker-end="url(#arrow)"/>
+  <rect class="strip" x="30" y="412" width="760" height="170" rx="8"/>
+  <text x="46" y="434" class="t"><tspan class="h">IRELM  (software parsable sequence of robot actions)</tspan></text>
+  <text x="46" y="458" class="code" xml:space="preserve">&lt;IRELM&gt;</text>
+  <text x="46" y="475" class="code" xml:space="preserve">  <tspan class="vad">&lt;VAD v="5" a="5" d="3"&gt;</tspan><tspan class="beep">&lt;BEEP melody="C5,0.06; E5,0.06; G5,0.1"/&gt;</tspan>You found it!<tspan class="vad">&lt;/VAD&gt;</tspan></text>
+  <text x="46" y="492" class="code" xml:space="preserve">  <tspan class="pause">&lt;PAUSE duration="0.25"/&gt;</tspan></text>
+  <text x="46" y="509" class="code" xml:space="preserve">  <tspan class="msg">&lt;MESSAGE sub="eyes" action="widen(0.8)" id="1"/&gt;</tspan></text>
+  <text x="46" y="526" class="code" xml:space="preserve">  That's the <tspan class="pros">&lt;PROSODY s="0.6" v="1.5" p="0.75"&gt;</tspan>last<tspan class="pros">&lt;/PROSODY&gt;</tspan> piece.</text>
+  <text x="46" y="543" class="code" xml:space="preserve">  <tspan class="msg">&lt;MESSAGE sub="eyes" action="widen(None)" id="1" close="true"/&gt;</tspan></text>
+  <text x="46" y="560" class="code" xml:space="preserve">&lt;/IRELM&gt;</text>
+
+  <!-- 3. listener -->
+  <path class="flow" d="M180 582 V606" marker-end="url(#arrow)"/>
+  <rect class="box" x="30" y="612" width="760" height="48" rx="10"/>
+  <text x="46" y="641" class="t"><tspan class="h">3. Listener</tspan>  turns IRELM into a performance</text>
+
+  <!-- outputs -->
+  <path class="flow" d="M150 660 V694" marker-end="url(#arrow)"/>
+  <path class="flow" d="M410 660 V694" marker-end="url(#arrow)"/>
+  <path class="flow" d="M670 660 V694" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="30" y="700" width="240" height="80" rx="10"/>
+  <text x="46" y="726" class="h" fill="#2563eb"><tspan class="pros">Voice</tspan></text>
+  <text x="46" y="748" class="t">TTS speech, shaped by</text>
+  <text x="46" y="766" class="t">emotion (VAD) and prosody</text>
+
+  <rect class="box" x="290" y="700" width="240" height="80" rx="10"/>
+  <text x="306" y="726" class="h"><tspan class="beep">Beeps and pauses</tspan></text>
+  <text x="306" y="748" class="t">Chirps, alarms and timing</text>
+  <text x="306" y="766" class="t">between the words</text>
+
+  <rect class="box" x="550" y="700" width="240" height="80" rx="10"/>
+  <text x="566" y="726" class="h"><tspan class="msg">Robot messages</tspan></text>
+  <text x="566" y="748" class="t">Actions for Eyes, head, etc.</text>
+  <text x="566" y="766" class="t">Multiple protocols, including ROS 2.</text>
+</svg>

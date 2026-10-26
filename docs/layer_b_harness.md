@@ -4,7 +4,7 @@ This **DRAFT** describes how Layer B  is put together.
 
 is split between the Pi on the robot and the backend (a PC or cloud compute with at least 16GB VRAM, see ADR 3). Only obvious placements are assigned; everything else is undecided.
 
-## What runs where
+## What runs where (side of fence problem)
 
 The split between the Pi on the robot, and on the backend (a PC or cloud compute with at least 16GB VRAM, see ADR 3).
 
@@ -12,6 +12,7 @@ Pi side (on the robot):
   - camera capture
   - microphone capture (probably a ReSpeaker array)
   - speaker playback
+  - the ROS 2 bridge node to Layer C
 
 Backend side:
   - the LLM (Layer A)
@@ -27,7 +28,6 @@ Undecided:
   - mood, relationships and other state
   - the policy gate
   - memory, redaction and the audit log
-  - the ROS 2 bridge node to Layer C
   - the messaging layer (Zenoh or NATS) setup
 
 Whatever isn't processed on the Pi has to be sent to the backend over the network. The robot revolves 360deg, and has limited real-estate for a cable harness, so networking will be wifi (version to be confirmed).
